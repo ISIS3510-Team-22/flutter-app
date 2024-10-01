@@ -88,3 +88,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: WorkSans
+      fonts:
+        - asset: fonts/WorkSans-Regular.ttf
+    - family: NovaMono
+      fonts:
+        - asset: fonts/NovaMono-Regular.ttf
+    - family: RubikMonoOne
+      fonts:
+        - asset: fonts/RubikMonoOne-Regular.ttf
