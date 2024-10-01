@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart'; // Import color and style constants
 
 class MainView extends StatelessWidget {
-  MainView({super.key});
+  const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class MainView extends StatelessWidget {
               Navigator.pushNamed(context, '/ai_helper');
               break;
           }
-          ;
         },
         items: const [
           BottomNavigationBarItem(

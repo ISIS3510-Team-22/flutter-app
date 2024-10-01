@@ -7,9 +7,9 @@ import 'views/ai_helper_view.dart';
 
 // Define your app routes here
 final Map<String, WidgetBuilder> appRoutes = {
-  '/': (context) => MainView(),
-  '/information': (context) => InformationView(),
-  '/chat': (context) => ChatView(),
-  '/news': (context) => NewsView(),
-  '/ai_helper': (context) => AiHelperView(),
+  '/': (context) => const MainView(),
+  '/information': (context) => const InformationView(),
+  '/chat': (context) => const ChatView(),
+  '/news': (context) => const NewsView(),
+  '/ai_helper': (context) => const AiHelperView(),
 };
