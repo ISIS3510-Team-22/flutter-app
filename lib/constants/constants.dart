@@ -12,8 +12,8 @@ const Color grayBlueColor = Color(0xFF455A64);
 const TextStyle titleTextStyle = TextStyle(
   fontFamily: 'RubikMonoOne',
   fontSize: 36,
-  fontWeight: FontWeight.bold,
-  color: darkBlueColor,
+  fontWeight: FontWeight.w500,
+  color: Colors.white,
 );
 
 const TextStyle headerTextStyle = TextStyle(

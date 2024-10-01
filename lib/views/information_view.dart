@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 
 class InformationView extends StatelessWidget {
+  const InformationView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: darkBlueColor,
+        foregroundColor: Colors.white,
         title: const Text(
           'INFORMATION',
           style: headerTextStyle,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'constants/constants.dart';
-import 'views/main_view.dart';
 import 'routes.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class StudyGlideApp extends StatelessWidget {
       title: 'Study Glide',
       theme: ThemeData(
         primaryColor: darkBlueColor,
-        scaffoldBackgroundColor: lightGrayColor,
+        scaffoldBackgroundColor: darkBlueColor,
       ),
       initialRoute: '/', // The initial route is the main view
       routes: appRoutes, // Use the defined routes

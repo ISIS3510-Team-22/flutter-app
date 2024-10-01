@@ -8,25 +8,28 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Exchange App'),
+        title: const Text('Study Glide', style: titleTextStyle),
+        backgroundColor: brightBlueColor,
       ),
-      body: const Text('Main View'),
+      body: const Text('MAIN VIEW (LOGIN)', style: headerTextStyle),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        selectedItemColor: brightBlueColor,
+        currentIndex: 1,
+        showUnselectedLabels: true,
+        unselectedItemColor: darkBlueColor,
+        selectedItemColor: darkBlueColor,
         onTap: (index) {
           switch (index) {
             case 0:
               Navigator.pushNamed(context, '/information');
               break;
             case 1:
-              Navigator.pushNamed(context, '/information');
+              Navigator.pushNamed(context, '/chat');
               break;
             case 2:
-              Navigator.pushNamed(context, '/information');
+              Navigator.pushNamed(context, '/news');
               break;
             case 3:
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/ai_helper');
               break;
           }
           ;
