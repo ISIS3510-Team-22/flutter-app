@@ -50,7 +50,7 @@ class InformationTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Container(
-        height: 80,
+        height: 70,
         decoration: BoxDecoration(
           color: grayBlueColor,
           borderRadius: BorderRadius.circular(10),
