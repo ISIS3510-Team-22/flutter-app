@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "811721817861",
+    "project_id": "exchangeapp-1432",
+    "storage_bucket": "exchangeapp-1432.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811721817861:android:b929fd731aa0d73957816c",
+        "android_client_info": {
+          "package_name": "com.example.exchangeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdB1S0PM0ZyEYZjRepj9iOYfz8uAeQcXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811721817861:android:ac0151ef820906d257816c",
+        "android_client_info": {
+          "package_name": "com.google.firebase.presents.exchange"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdB1S0PM0ZyEYZjRepj9iOYfz8uAeQcXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
