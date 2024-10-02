@@ -7,6 +7,7 @@ import 'views/ai_helper_view.dart';
 import 'views/recipes_view.dart';
 import 'views/mental_health_view.dart';
 import 'views/adapting_tips_view.dart';
+import 'views/universities_view.dart';
 
 // Define your app routes here
 final Map<String, WidgetBuilder> appRoutes = {
@@ -18,4 +19,5 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/information/recipes': (context) => const RecipeListView(),
   '/information/mental_health': (context) => const MentalHealthView(),
   '/information/adapting_tips': (context) => const AdaptingTipsView(),
+  '/information/universities_info': (context) => const UniversitiesView(),
 };

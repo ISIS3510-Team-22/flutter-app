@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/adapting_viewmodel';
+import '../viewmodels/adapting_viewmodel.dart';
 import '../constants/constants.dart';
 
 class AdaptingTipsView extends StatelessWidget {

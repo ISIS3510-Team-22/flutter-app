@@ -6,7 +6,8 @@ const Color coralRedColor = Color(0xFFF76C6C);
 const Color yellowColor = Color(0xFFF9D65E);
 const Color lightGrayColor = Color(0xFFEDECF1);
 const Color brightBlueColor = Color(0xFF3D8BFF);
-const Color grayBlueColor = Color(0xFF455A64);
+const Color grayBlueColor = Color.fromARGB(255, 67, 80, 86);
+const Color grayColor = Color.fromARGB(255, 130, 144, 151);
 
 // Define text styles with font families
 const TextStyle titleTextStyle = TextStyle(

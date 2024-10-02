@@ -21,7 +21,7 @@ class AdaptingViewModel extends ChangeNotifier {
     notifyListeners();
 
     _adaptingTips = await _adaptingModelService.fetchAdaptingModels();
-    
+
     _isLoading = false;
     notifyListeners();
   }
