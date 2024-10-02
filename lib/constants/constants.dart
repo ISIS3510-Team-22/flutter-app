@@ -6,7 +6,8 @@ const Color coralRedColor = Color(0xFFF76C6C);
 const Color yellowColor = Color(0xFFF9D65E);
 const Color lightGrayColor = Color(0xFFEDECF1);
 const Color brightBlueColor = Color(0xFF3D8BFF);
-const Color grayBlueColor = Color(0xFF455A64);
+const Color grayBlueColor = Color.fromARGB(255, 67, 80, 86);
+const Color grayColor = Color.fromARGB(255, 130, 144, 151);
 
 // Define text styles with font families
 const TextStyle titleTextStyle = TextStyle(
@@ -25,12 +26,25 @@ const TextStyle headerTextStyle = TextStyle(
 const TextStyle bodyTextStyle = TextStyle(
   fontFamily: 'WorkSans',
   fontSize: 18,
-  color: darkBlueColor,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+);
+
+const TextStyle subBodyTextStyle = TextStyle(
+  fontFamily: 'WorkSans',
+  fontSize: 16,
+  color: Colors.white,
+);
+
+const TextStyle simpleText = TextStyle(
+  fontFamily: 'WorkSans',
+  fontSize: 14,
+  color: Colors.white,
 );
 
 const TextStyle buttonTextStyle = TextStyle(
   fontFamily: 'WorkSans',
   fontSize: 16,
   fontWeight: FontWeight.bold,
-  color: Colors.white,
+  color: lightGrayColor,
 );

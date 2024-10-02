@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../constants/constants.dart'; // Import color and style constants
 
 class MainView extends StatelessWidget {
-  const MainView({super.key});
+  MainView({super.key});
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  Future<void> _sendAnalyticsEvent(int index) async {
+    await analytics.logEvent(
+      name: 'bottom_nav',
+      parameters: <String, Object>{
+        'index': index,
+        'label': 'Item $index',
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +30,7 @@ class MainView extends StatelessWidget {
         unselectedItemColor: darkBlueColor,
         selectedItemColor: darkBlueColor,
         onTap: (index) {
+          _sendAnalyticsEvent(index);
           switch (index) {
             case 0:
               Navigator.pushNamed(context, '/information');
