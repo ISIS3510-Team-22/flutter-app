@@ -62,17 +62,23 @@ class UniversitiesView extends StatelessWidget {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Container(
-                                  height: 80,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        grayBlueColor, // Darker blue for the university container
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      university.name,
-                                      style: buttonTextStyle,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context,
+                                        '/information/${university.name}');
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          grayBlueColor, // Darker blue for the university container
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        university.name,
+                                        style: buttonTextStyle,
+                                      ),
                                     ),
                                   ),
                                 ),

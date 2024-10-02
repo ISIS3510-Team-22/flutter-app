@@ -11,7 +11,7 @@ import 'views/universities_view.dart';
 
 // Define your app routes here
 final Map<String, WidgetBuilder> appRoutes = {
-  '/': (context) => const MainView(),
+  '/': (context) => MainView(),
   '/information': (context) => const InformationView(),
   '/chat': (context) => const ChatView(),
   '/news': (context) => const NewsView(),

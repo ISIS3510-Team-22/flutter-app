@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'constants/constants.dart';
 import 'routes.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -9,16 +10,22 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const StudyGlideApp());
+  runApp(StudyGlideApp());
 }
 
 class StudyGlideApp extends StatelessWidget {
-  const StudyGlideApp({super.key});
+  StudyGlideApp({super.key});
+  // Create the FirebaseAnalytics instance
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Study Glide',
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ],
+
       theme: ThemeData(
         primaryColor: darkBlueColor,
         scaffoldBackgroundColor: darkBlueColor,
