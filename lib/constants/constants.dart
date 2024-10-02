@@ -25,12 +25,25 @@ const TextStyle headerTextStyle = TextStyle(
 const TextStyle bodyTextStyle = TextStyle(
   fontFamily: 'WorkSans',
   fontSize: 18,
-  color: darkBlueColor,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+);
+
+const TextStyle subBodyTextStyle = TextStyle(
+  fontFamily: 'WorkSans',
+  fontSize: 16,
+  color: Colors.white,
+);
+
+const TextStyle simpleText = TextStyle(
+  fontFamily: 'WorkSans',
+  fontSize: 14,
+  color: Colors.white,
 );
 
 const TextStyle buttonTextStyle = TextStyle(
   fontFamily: 'WorkSans',
   fontSize: 16,
   fontWeight: FontWeight.bold,
-  color: Colors.white,
+  color: lightGrayColor,
 );
