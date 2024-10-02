@@ -32,11 +32,23 @@ class InformationView extends StatelessWidget {
               title: 'Cooking & recipes while abroad',
               onTap: () {
                 // Navigate to the Recipe List View
-                Navigator.pushNamed(context, '/recipes');
+                Navigator.pushNamed(context, '/information/recipes');
               },
             ),
-            const InformationTile(title: 'Mental Health'),
-            const InformationTile(title: 'Adapting to a new city'),
+            InformationTile(
+              title: 'Mental Health',
+              onTap: () {
+                // Navigate to the Recipe List View
+                Navigator.pushNamed(context, '/information/mental_health');
+              },
+            ),
+            InformationTile(
+              title: 'Adapting to a new city',
+              onTap: () {
+                // Navigate to the Recipe List View
+                Navigator.pushNamed(context, '/information/adapting_tips');
+              },
+            ),
             const InformationTile(title: 'Universities info'),
             const InformationTile(title: 'Current exchanges available'),
           ],

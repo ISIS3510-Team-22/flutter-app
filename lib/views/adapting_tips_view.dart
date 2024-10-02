@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/recipe_viewmodel.dart';
+import '../viewmodels/adapting_viewmodel';
 import '../constants/constants.dart';
 
-class RecipeListView extends StatelessWidget {
-  const RecipeListView({super.key});
+class AdaptingTipsView extends StatelessWidget {
+  const AdaptingTipsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Accessing the RecipeViewModel
     return ChangeNotifierProvider(
-      create: (context) => RecipeViewModel()..fetchRecipes(),
-      child: Consumer<RecipeViewModel>(
+      create: (context) => AdaptingViewModel()..fetchAdaptingTips(),
+      child: Consumer<AdaptingViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: darkBlueColor,
               foregroundColor: Colors.white,
               title: const Text(
-                'RECIPES',
+                'ADAPTING TO A NEW CITY',
                 style: headerTextStyle,
               ),
             ),
-            body: viewModel.recipes.isNotEmpty
+            body: viewModel.adaptingTips.isNotEmpty
                 ? ListView.builder(
-                    itemCount: viewModel.recipes.length,
+                    itemCount: viewModel.adaptingTips.length,
                     itemBuilder: (context, index) {
-                      final recipe = viewModel.recipes[index];
+                      final tip = viewModel.adaptingTips[index];
                       return Padding(
                         padding: const EdgeInsets.all(
                             8.0), // Add some padding around each item
@@ -37,12 +37,8 @@ class RecipeListView extends StatelessWidget {
                           ),
                           child: ExpansionTile(
                             title: Text(
-                              recipe.name,
+                              tip.title,
                               style: bodyTextStyle,
-                            ),
-                            subtitle: Text(
-                              recipe.description,
-                              style: subBodyTextStyle,
                             ),
                             iconColor: Colors.white,
                             children: [
@@ -52,22 +48,13 @@ class RecipeListView extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    const SizedBox(height: 0),
                                     const Text(
-                                      "Ingredients:",
-                                      style: simpleText,
-                                    ),
-                                    ...recipe.ingredients
-                                        .map((ingredient) => Text(
-                                              "- $ingredient",
-                                              style: simpleText,
-                                            )),
-                                    const SizedBox(height: 10),
-                                    const Text(
-                                      "Instructions:",
+                                      "Description:",
                                       style: simpleText,
                                     ),
                                     Text(
-                                      recipe.instructions,
+                                      tip.description,
                                       style: simpleText,
                                     ),
                                   ],
