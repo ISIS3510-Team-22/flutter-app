@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/main_view.dart';
+//import 'views/main_view.dart';
 import 'views/information_view.dart';
 import 'views/chat_view.dart';
 import 'views/news_view.dart';
@@ -8,10 +8,11 @@ import 'views/recipes_view.dart';
 import 'views/mental_health_view.dart';
 import 'views/adapting_tips_view.dart';
 import 'views/universities_view.dart';
+import 'views/login_view.dart';
 
 // Define your app routes here
 final Map<String, WidgetBuilder> appRoutes = {
-  '/': (context) => MainView(),
+  '/': (context) => const LoginPage(),
   '/information': (context) => const InformationView(),
   '/chat': (context) => const ChatView(),
   '/news': (context) => const NewsView(),
