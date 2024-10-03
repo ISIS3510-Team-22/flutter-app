@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:studyglide/views/sign_up_view.dart';
 import 'package:studyglide/widgets/form_container_widget.dart';
@@ -17,7 +16,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -104,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                        MaterialPageRoute(builder: (context) => const SignUpPage()),
                         (route) => false,
                       );
                     },
@@ -142,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       showToast(message: "User is successfully signed in");
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/information");
+      Navigator.pushNamed(context, "/home");
     } else {
       showToast(message: "Some error occurred");
     }
