@@ -145,7 +145,7 @@ setState(() {
     if (user != null) {
       showToast(message: "User is successfully created");
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushNamed(context, "/");
     } else {
       showToast(message: "Some error happend");
     }
