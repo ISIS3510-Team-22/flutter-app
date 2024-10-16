@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studyglide/views/main_view.dart';
 //import 'views/main_view.dart';
 import 'views/information_view.dart';
 import 'views/chat_view.dart';
@@ -13,8 +14,9 @@ import 'views/login_view.dart';
 // Define your app routes here
 final Map<String, WidgetBuilder> appRoutes = {
   '/': (context) => const LoginPage(),
+  '/home': (context) =>  MainView(),
   '/information': (context) => const InformationView(),
-  '/chat': (context) => const ChatView(),
+  '/chat': (context) => const ChatListScreen(),
   '/news': (context) => const NewsView(),
   '/ai_helper': (context) => const AiHelperView(),
   '/information/recipes': (context) => const RecipeListView(),
