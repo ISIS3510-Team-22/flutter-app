@@ -1,10 +1,9 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:studyglide/constants/constants.dart';
+import 'package:studyglide/utils/no_spaces_formatter.dart';
 
 
 class FormContainerWidget extends StatefulWidget {
-
   final TextEditingController? controller;
   final Key? fieldKey;
   final bool? isPasswordField;
@@ -16,19 +15,18 @@ class FormContainerWidget extends StatefulWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? inputType;
 
-  const FormContainerWidget({super.key, 
-    this.controller,
-    this.isPasswordField,
-    this.fieldKey,
-    this.hintText,
-    this.labelText,
-    this.helperText,
-    this.onSaved,
-    this.validator,
-    this.onFieldSubmitted,
-    this.inputType
-  });
-
+  const FormContainerWidget(
+      {super.key,
+      this.controller,
+      this.isPasswordField,
+      this.fieldKey,
+      this.hintText,
+      this.labelText,
+      this.helperText,
+      this.onSaved,
+      this.validator,
+      this.onFieldSubmitted,
+      this.inputType});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -36,9 +34,7 @@ class FormContainerWidget extends StatefulWidget {
 }
 
 class _FormContainerWidgetState extends State<FormContainerWidget> {
-
   bool _obscureText = true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,23 +50,31 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         controller: widget.controller,
         keyboardType: widget.inputType,
         key: widget.fieldKey,
-        obscureText: widget.isPasswordField == true? _obscureText : false,
+        obscureText: widget.isPasswordField == true ? _obscureText : false,
         onSaved: widget.onSaved,
         validator: widget.validator,
         onFieldSubmitted: widget.onFieldSubmitted,
+        inputFormatters: [
+          NoSpacesFormatter(), // Aquí aplicamos el filtro para eliminar espacios
+        ],
         decoration: InputDecoration(
           border: InputBorder.none,
           filled: true,
           hintText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.black45),
+          
           suffixIcon: GestureDetector(
             onTap: () {
               setState(() {
                 _obscureText = !_obscureText;
               });
             },
-            child:
-            widget.isPasswordField==true? Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: _obscureText == false ? Colors.blue : Colors.grey,) : Text(""),
+            child: widget.isPasswordField == true
+                ? Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: _obscureText == false ? darkBlueBottonColor : Colors.grey,
+                  )
+                : const Text(""),
           ),
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:studyglide/constants/constants.dart';
 import 'package:studyglide/firebase_auth_services.dart';
 import 'package:studyglide/views/login_view.dart';
 import 'package:studyglide/widgets/form_container_widget.dart';
@@ -33,19 +35,15 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("SignUp"),
-      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Sign Up",
-                style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+              SvgPicture.asset(
+                "assets/banner.svg",
+                height: 140,
               ),
               const SizedBox(
                 height: 30,
@@ -83,14 +81,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: double.infinity,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: darkBlueBottonColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
                       child: isSigningUp ? const CircularProgressIndicator(color: Colors.white,):const Text(
                     "Sign Up",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                    style: bodyTextStyle,
                   )),
                 ),
               ),
@@ -100,7 +97,10 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Already have an account?"),
+                  const Text(
+                    "Already have an account?",
+                    style: subBodyTextStyle,
+                    ),
                   const SizedBox(
                     width: 5,
                   ),
@@ -109,13 +109,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()),
+                                builder: (context) => const LoginPage()),
                             (route) => false);
                       },
                       child: const Text(
                         "Login",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.bold),
+                        style: bodyTextStyle,
                       ))
                 ],
               )
@@ -145,7 +144,7 @@ setState(() {
     if (user != null) {
       showToast(message: "User is successfully created");
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushNamed(context, "/informacion");
     } else {
       showToast(message: "Some error happend");
     }

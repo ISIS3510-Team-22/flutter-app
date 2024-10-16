@@ -36,6 +36,8 @@ class FirebaseAuthService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         showToast(message: 'Invalid email or password.');
+      } else if (e.code == 'invalid-credential') {
+        showToast(message: 'The email or password is incorrect.');
       } else {
         showToast(message: 'An error occurred: ${e.code}');
       }
