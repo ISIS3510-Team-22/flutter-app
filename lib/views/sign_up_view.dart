@@ -261,7 +261,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       child: const Text(
                         "Login",
-                        style: bodyTextStyle,
+                        style: buttonTextStyle,
                       ))
                 ],
               )
@@ -313,7 +313,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (user != null) {
       showToast(message: "User is successfully created");
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/information");
+      Navigator.pushNamed(context, "/home");
     } else {
       showToast(message: "Some error happened");
     }
