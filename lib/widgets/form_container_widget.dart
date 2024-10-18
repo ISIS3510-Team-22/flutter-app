@@ -26,7 +26,7 @@ class FormContainerWidget extends StatefulWidget {
       this.onSaved,
       this.validator,
       this.onFieldSubmitted,
-      this.inputType});
+      this.inputType, required Null Function(dynamic value) onChanged});
 
   @override
   // ignore: library_private_types_in_public_api
