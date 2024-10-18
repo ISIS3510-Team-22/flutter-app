@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
               FormContainerWidget(
                 controller: _emailController,
                 hintText: "Email",
-                isPasswordField: false,
+                isPasswordField: false, onChanged: (value) {  },
               ),
               const SizedBox(
                 height: 10,
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
               FormContainerWidget(
                 controller: _passwordController,
                 hintText: "Password",
-                isPasswordField: true,
+                isPasswordField: true, onChanged: (value) {  },
               ),
               const SizedBox(
                 height: 30,
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: const Text(
                       "Sign Up",
-                      style: bodyTextStyle,
+                      style: buttonTextStyle,
                     ),
                   ),
                 ],
