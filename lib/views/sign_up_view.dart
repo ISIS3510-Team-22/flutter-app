@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:studyglide/constants/constants.dart';
 import 'package:studyglide/firebase_auth_services.dart';
+import 'package:studyglide/services/location_service.dart';
 import 'package:studyglide/views/login_view.dart';
 import 'package:studyglide/widgets/form_container_widget.dart';
 
@@ -299,12 +301,23 @@ class _SignUpPageState extends State<SignUpPage> {
       isSigningUp = true;
     });
 
-    // ignore: unused_local_variable
-    String username = _usernameController.text;
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  String email = _emailController.text;
+  String password = _passwordController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+  // Obtener la ubicación actual
+  LocationService locationService = LocationService();
+  Position? posicion = await locationService.obtenerUbicacionActual();
+
+  if (posicion != null) {
+    double latitud = posicion.latitude;
+    double longitud = posicion.longitude;
+
+    // Llamar a la función de registro con la latitud y longitud reales
+    User? user = await _auth.signUpWithEmailAndPassword(email, password, latitud, longitud);
+
+    setState(() {
+      isSigningUp = false;
+    });
 
     setState(() {
       isSigningUp = false;
@@ -316,6 +329,10 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.pushNamed(context, "/home");
     } else {
       showToast(message: "Some error happened");
+      showToast(message: "Some error happened");
     }
+  } else {
+    showToast(message: "Unable to obtain location.");
   }
+}
 }
