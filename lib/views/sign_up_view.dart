@@ -147,6 +147,27 @@ class _SignUpPageState extends State<SignUpPage> {
                   checkPassword();
                 },
               ),
+              Visibility(
+                visible: !(containChar & containEspecial & containMayus & containNumber),
+                child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                          "6+ chars, 1 uppercase, 1 special & 1 number",
+                          style: TextStyle(
+                            fontFamily: 'WorkSans',
+                            fontSize: 16,
+                            color: Colors.red,
+                          ),
+                      )
+                    ],
+                  ),
+                
+              
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -175,46 +196,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         )
                       ])),
-              const SizedBox(
-                height: 15,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "The password must have at least 8 characters",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containChar ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  Text(
-                    "The password must have at least 1 uppercase letter",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containMayus ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  Text(
-                    "The password must have at least 1 special character",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containEspecial ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  Text(
-                    "The password must have at least 1 number",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containNumber ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(
                 height: 30,
               ),
