@@ -18,7 +18,7 @@ class AdaptingTipsView extends StatelessWidget {
               backgroundColor: darkBlueColor,
               foregroundColor: Colors.white,
               title: const Text(
-                'ADAPTING TO A NEW CITY',
+                'ADAPTING TIPS',
                 style: headerTextStyle,
               ),
             ),
@@ -41,6 +41,7 @@ class AdaptingTipsView extends StatelessWidget {
                               style: bodyTextStyle,
                             ),
                             iconColor: Colors.white,
+                            collapsedIconColor: Colors.white,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(

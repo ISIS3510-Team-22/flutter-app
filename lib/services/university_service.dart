@@ -7,35 +7,23 @@ class UniversityService {
       FirebaseFirestore.instance.collection('universities');
 
   Stream<List<University>> fetchUniversities() {
-    // Fetch all universities
-    return universityCollection.snapshots().asyncMap((snapshot) {
-      // Map each document to a University object without awaiting
-      return Future.wait(snapshot.docs.map((doc) {
-        // Fetch the university data
+    return universityCollection.snapshots().asyncMap((snapshot) async {
+      List<University> universities =
+          await Future.wait(snapshot.docs.map((doc) async {
         Map<String, dynamic> universityData =
             doc.data() as Map<String, dynamic>;
-
-        return doc.reference
+        List<Opinion> opinions = await doc.reference
             .collection('opinions')
             .get()
             .then((opinionsSnapshot) {
-          // Map each opinion document to an Opinion object
-          // List<Opinion> opinions = opinionsSnapshot.docs.map((opinionDoc) {
-          //   return Opinion.fromMap(opinionDoc.data(), opinionDoc.id);
-          // }).toList();
-
-          List<Opinion> opinions = [
-            Opinion.fromMap({
-              'name': 'Empty', // Nombre de la persona que dio la opinión
-              'rating': 0.0, // Calificación dada a la universidad
-              'comments': 'Empty.' // Comentarios de la opinión
-            }, 'Empty')
-          ];
-
-          // Return the University object with the opinions included
-          return University.fromMap(universityData, doc.id, opinions);
+          return opinionsSnapshot.docs.map((opinionDoc) {
+            return Opinion.fromMap(opinionDoc.data(), opinionDoc.id);
+          }).toList();
         });
+
+        return University.fromMap(universityData, doc.id, opinions);
       }).toList());
+      return universities;
     });
   }
 }

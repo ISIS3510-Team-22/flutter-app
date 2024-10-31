@@ -56,7 +56,13 @@ class InformationView extends StatelessWidget {
                 Navigator.pushNamed(context, '/information/universities_info');
               },
             ),
-            const InformationTile(title: 'Current exchanges available'),
+            InformationTile(
+              title: 'Current exchanges available',
+              onTap: () {
+                // Navigate to the Recipe List View
+                Navigator.pushNamed(context, '/information/exchanges');
+              },
+            ),
           ],
         ),
       ),

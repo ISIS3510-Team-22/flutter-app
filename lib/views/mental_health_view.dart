@@ -41,6 +41,7 @@ class MentalHealthView extends StatelessWidget {
                               style: bodyTextStyle,
                             ),
                             iconColor: Colors.white,
+                            collapsedIconColor: Colors.white,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(

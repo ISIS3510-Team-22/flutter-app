@@ -45,6 +45,7 @@ class RecipeListView extends StatelessWidget {
                               style: subBodyTextStyle,
                             ),
                             iconColor: Colors.white,
+                            collapsedIconColor: Colors.white,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(
