@@ -61,22 +61,60 @@ class UniversitiesView extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final university = viewModel.universities[index];
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: GestureDetector(
-                                  child: Container(
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          grayBlueColor, // Darker blue for the university container
-                                      borderRadius: BorderRadius.circular(20),
+                                padding: const EdgeInsets.all(
+                                    8.0), // Add some padding around each item
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        grayBlueColor, // Darker blue for the university container
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ExpansionTile(
+                                    title: Text(
+                                      university.name,
+                                      style: bodyTextStyle,
                                     ),
-                                    child: Center(
-                                      child: Text(
-                                        university.name,
-                                        style: buttonTextStyle,
+                                    iconColor: Colors.white,
+                                    collapsedIconColor: Colors.white,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0, vertical: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "City:",
+                                              style: simpleText,
+                                              textAlign: TextAlign.start,
+                                            ),
+                                            Text(
+                                              university.city,
+                                              style: simpleText,
+                                            ),
+                                            const SizedBox(height: 10),
+                                            const Text(
+                                              "Country:",
+                                              style: simpleText,
+                                            ),
+                                            Text(
+                                              university.country,
+                                              style: simpleText,
+                                            ),
+                                            const SizedBox(height: 10),
+                                            const Text(
+                                              "Students:",
+                                              style: simpleText,
+                                            ),
+                                            Text(
+                                              university.students.toString(),
+                                              style: simpleText,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
                               );

@@ -15,13 +15,13 @@ import 'views/exchanges_availables_view.dart';
 final Map<String, WidgetBuilder> appRoutes = {
   '/': (context) => const LoginPage(),
   '/home': (context) => MainView(),
-  '/information': (context) => const InformationView(),
+  '/information': (context) => InformationView(),
   '/chat': (context) => const ChatListScreen(),
   '/news': (context) => NewsView(),
   '/ai_helper': (context) => const AiHelperView(),
   '/information/recipes': (context) => const RecipeListView(),
   '/information/mental_health': (context) => const MentalHealthView(),
   '/information/adapting_tips': (context) => const AdaptingTipsView(),
-  '/information/universities_info': (context) => UniversitiesView(),
+  '/information/universities_info': (context) => const UniversitiesView(),
   '/information/exchanges': (context) => const ExchangesView(),
 };
