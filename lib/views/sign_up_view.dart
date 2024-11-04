@@ -42,10 +42,22 @@ class _SignUpPageState extends State<SignUpPage> {
 
     setState(() {
       // Regular expression to verify the password requirements
-      containChar = text.length >= 8;
-      containMayus = RegExp(r'[A-Z]').hasMatch(text);
-      containNumber = RegExp(r'[0-9]').hasMatch(text);
-      containEspecial = RegExp(r'[!@#\$&*~]').hasMatch(text);
+      if (text.isNotEmpty){
+        if (RegExp(r'[A-Z]').hasMatch(text) & RegExp(r'[0-9]').hasMatch(text) & RegExp(r'[!@#\$&*~]').hasMatch(text) & (text.length >= 8)){
+          containChar = true;
+          containMayus = RegExp(r'[A-Z]').hasMatch(text);
+          containNumber = RegExp(r'[0-9]').hasMatch(text);
+          containEspecial = RegExp(r'[!@#\$&*~]').hasMatch(text);
+        } else {
+          containChar = false;
+          containMayus = false;
+          containNumber = false;
+          containEspecial = false;
+        }
+        passwordHasChars = true;
+      } else {
+        passwordHasChars = false;
+      }
     });
   }
 
@@ -56,7 +68,12 @@ class _SignUpPageState extends State<SignUpPage> {
       final RegExp emailRegex = RegExp(
         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
       );
-      validEmail = emailRegex.hasMatch(email);
+      if (email.isNotEmpty) {
+        validEmail = emailRegex.hasMatch(email);
+        emailHasChars = true;
+      } else {
+        emailHasChars = false;
+      }
     });
   }
 
@@ -64,10 +81,11 @@ class _SignUpPageState extends State<SignUpPage> {
     final password = _passwordController.text;
     final confirmation = _confirmPasswordController.text;
     setState(() {
-      if (password == confirmation) {
-        passwordEqual = true;
+      if (password.isNotEmpty){
+        passwordEqual = (password == confirmation);
+        confirmHasChars = true;
       } else {
-        passwordEqual = false;
+        confirmHasChars = false;
       }
     });
   }
@@ -78,6 +96,9 @@ class _SignUpPageState extends State<SignUpPage> {
   bool containEspecial = false;
   bool validEmail = false;
   bool passwordEqual = false;
+  bool emailHasChars = false;
+  bool passwordHasChars = false;
+  bool confirmHasChars = false;
 
   @override
   void dispose() {
@@ -120,7 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 onChanged: (text) {},
               ),
               Visibility(
-                  visible: !validEmail,
+                  visible: !validEmail & emailHasChars,
                   child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -148,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               Visibility(
-                visible: !(containChar & containEspecial & containMayus & containNumber),
+                visible: !(containChar & containEspecial & containMayus & containNumber) & passwordHasChars,
                 child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -180,7 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               Visibility(
-                  visible: !passwordEqual,
+                  visible: !passwordEqual & confirmHasChars,
                   child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -294,7 +315,7 @@ class _SignUpPageState extends State<SignUpPage> {
     double longitud = posicion.longitude;
 
     // Llamar a la función de registro con la latitud y longitud reales
-    User? user = await _auth.signUpWithEmailAndPassword(email, password, latitud, longitud);
+    User? user = await _auth.signUpWithEmailAndPassword(email, password, latitud, longitud, _usernameController.text);
 
     setState(() {
       isSigningUp = false;
