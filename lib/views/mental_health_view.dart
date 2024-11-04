@@ -21,6 +21,7 @@ class MentalHealthView extends StatelessWidget {
                 'MENTAL HEALTH',
                 style: headerTextStyle,
               ),
+              centerTitle: true,
             ),
             body: viewModel.mentalHealthRecords.isNotEmpty
                 ? ListView.builder(

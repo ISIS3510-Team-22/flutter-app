@@ -14,6 +14,7 @@ class InformationView extends StatelessWidget {
           'INFORMATION',
           style: headerTextStyle,
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_today),
@@ -65,6 +66,46 @@ class InformationView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,
+        showUnselectedLabels: true,
+        unselectedItemColor: darkBlueColor,
+        selectedItemColor: darkBlueColor,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/information');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/chat');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/news');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/ai_helper');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description),
+            label: 'Information',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'News',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.smart_toy),
+            label: 'AI Helper',
+          ),
+        ],
       ),
     );
   }

@@ -21,6 +21,7 @@ class AdaptingTipsView extends StatelessWidget {
                 'ADAPTING TIPS',
                 style: headerTextStyle,
               ),
+              centerTitle: true,
             ),
             body: viewModel.adaptingTips.isNotEmpty
                 ? ListView.builder(

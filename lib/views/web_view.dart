@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class ExchangesView extends StatelessWidget {
-  const ExchangesView({super.key});
-  final String url1 =
-      "https://erasmus-plus.ec.europa.eu/opportunities/opportunities-for-individuals/students/studying-abroad";
+class WebView extends StatelessWidget {
+  final String url;
+
+  const WebView({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +25,14 @@ class ExchangesView extends StatelessWidget {
           },
         ),
       )
-      ..loadRequest(Uri.parse(url1));
+      ..loadRequest(Uri.parse(url));
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: darkBlueColor,
         foregroundColor: Colors.white,
         title: const Text(
-          'EXCHANGES',
+          'NEWS DETAIL',
           style: headerTextStyle,
         ),
         centerTitle: true,

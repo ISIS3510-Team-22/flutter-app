@@ -21,7 +21,7 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Home Page'),
-      body: const Text('MAIN VIEW (LOGIN)', style: headerTextStyle),
+      body: const Text('MAIN VIEW', style: headerTextStyle),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
         showUnselectedLabels: true,
