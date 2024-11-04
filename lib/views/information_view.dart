@@ -14,6 +14,7 @@ class InformationView extends StatelessWidget {
           'INFORMATION',
           style: headerTextStyle,
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_today),

@@ -21,6 +21,7 @@ class UniversitiesView extends StatelessWidget {
                 'UNIVERSITIES',
                 style: headerTextStyle,
               ),
+              centerTitle: true,
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),

@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import '../constants/constants.dart';
+import './web_view.dart';
 
 class NewsView extends StatelessWidget {
-  const NewsView({super.key});
+  NewsView({super.key});
+
+  final List<NewsItem> newsItems = [
+    NewsItem(
+      title: "Planear Movilidad Académica",
+      subtitle:
+          "A continuación, encontrarás la información general para postularte...",
+      url: "https://internacionalizacion.uniandes.edu.co/movilidad-academica",
+    ),
+    NewsItem(
+      title: "Intercambio Internacional y Doble Titulación",
+      subtitle:
+          "Consulta la oferta académica internacional en el Departamento de Ingeniería Mecánica.",
+      url:
+          "https://mecanica.uniandes.edu.co/estudiantes/pregrado/intercambio-internacional",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +31,48 @@ class NewsView extends StatelessWidget {
           'NEWS',
           style: headerTextStyle,
         ),
+        centerTitle: true,
       ),
-      body: const Text(
-        'NEWS HERE',
-        style: headerTextStyle,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView.builder(
+          itemCount: newsItems.length,
+          itemBuilder: (context, index) {
+            final news = newsItems[index];
+            return GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WebView(url: news.url),
+                ),
+              ),
+              child: Card(
+                color: grayBlueColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        news.title,
+                        style: bodyTextStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        news.subtitle,
+                        style: subBodyTextStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
@@ -61,4 +116,16 @@ class NewsView extends StatelessWidget {
       ),
     );
   }
+}
+
+class NewsItem {
+  final String title;
+  final String subtitle;
+  final String url;
+
+  NewsItem({
+    required this.title,
+    required this.subtitle,
+    required this.url,
+  });
 }

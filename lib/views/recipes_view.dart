@@ -21,6 +21,7 @@ class RecipeListView extends StatelessWidget {
                 'RECIPES',
                 style: headerTextStyle,
               ),
+              centerTitle: true,
             ),
             body: viewModel.recipes.isNotEmpty
                 ? ListView.builder(
