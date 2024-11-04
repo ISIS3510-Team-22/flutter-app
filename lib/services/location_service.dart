@@ -1,37 +1,34 @@
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
-  // Método para obtener la latitud y longitud del dispositivo
-  Future<Position?> obtenerUbicacionActual() async {
+  // Método para obtener la ubicación del usuario
+  Future<Position?> obtenerUbicacion() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Verificar si los servicios de ubicación están habilitados
+    // Verifica si el servicio de ubicación está habilitado
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Si los servicios no están habilitados, retorna null
-      print('Los servicios de ubicación están deshabilitados.');
+      print("El servicio de ubicación está deshabilitado");
       return null;
     }
 
-    // Solicitar permisos de ubicación
+    // Verifica los permisos de ubicación
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Si el permiso es denegado, retorna null
-        print('Los permisos de ubicación fueron denegados.');
+        print("Los permisos de ubicación han sido denegados");
         return null;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Los permisos son denegados permanentemente, no se puede acceder a la ubicación
-      print('Los permisos de ubicación están denegados permanentemente.');
+      print("Los permisos de ubicación han sido denegados permanentemente");
       return null;
     }
 
-    // Finalmente, obtener la ubicación actual
+    // Obtener la ubicación actual
     return await Geolocator.getCurrentPosition();
   }
 }
