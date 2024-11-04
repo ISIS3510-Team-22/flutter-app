@@ -22,6 +22,6 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/information/recipes': (context) => const RecipeListView(),
   '/information/mental_health': (context) => const MentalHealthView(),
   '/information/adapting_tips': (context) => const AdaptingTipsView(),
-  '/information/universities_info': (context) => UniversitiesView(),
+  '/information/universities_info': (context) => const UniversitiesView(),
   '/information/exchanges': (context) => const ExchangesView(),
 };
