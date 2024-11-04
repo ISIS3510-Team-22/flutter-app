@@ -54,6 +54,10 @@ class FirebaseAuthService {
 
   Future<User?> signInWithEmailAndPassword(
       String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      showToast(message: 'Please enter your email and password.');
+      return null;
+    }
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -65,7 +69,7 @@ class FirebaseAuthService {
         showToast(message: 'The email or password is incorrect.');
       } else {
         showToast(message: 'An error occurred: ${e.code}');
-      }
+      } 
     }
     return null;
   }
