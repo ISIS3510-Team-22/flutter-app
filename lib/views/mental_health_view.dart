@@ -21,7 +21,6 @@ class MentalHealthView extends StatelessWidget {
                 'MENTAL HEALTH',
                 style: headerTextStyle,
               ),
-              centerTitle: true,
             ),
             body: viewModel.mentalHealthRecords.isNotEmpty
                 ? ListView.builder(
@@ -42,7 +41,6 @@ class MentalHealthView extends StatelessWidget {
                               style: bodyTextStyle,
                             ),
                             iconColor: Colors.white,
-                            collapsedIconColor: Colors.white,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(

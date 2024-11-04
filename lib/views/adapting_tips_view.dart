@@ -18,10 +18,9 @@ class AdaptingTipsView extends StatelessWidget {
               backgroundColor: darkBlueColor,
               foregroundColor: Colors.white,
               title: const Text(
-                'ADAPTING TIPS',
+                'ADAPTING TO A NEW CITY',
                 style: headerTextStyle,
               ),
-              centerTitle: true,
             ),
             body: viewModel.adaptingTips.isNotEmpty
                 ? ListView.builder(
@@ -42,7 +41,6 @@ class AdaptingTipsView extends StatelessWidget {
                               style: bodyTextStyle,
                             ),
                             iconColor: Colors.white,
-                            collapsedIconColor: Colors.white,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(

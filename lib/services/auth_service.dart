@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Registrar usuario con name (email), password y ubicación
   Future<Usuario?> registrar(String name, String password, double latitud, double longitud) async {
@@ -16,18 +14,7 @@ class AuthService {
       User? user = cred.user;
 
       // Creamos el modelo de Usuario con el email (name) y ubicación
-      Usuario nuevoUsuario = Usuario.fromFirebaseUser(user!, latitud: latitud, longitud: longitud);
-
-      // Guardar el usuario en Firestore
-      await _firestore.collection('usuarios').doc(nuevoUsuario.id).set({
-        'id': nuevoUsuario.id,
-        'name': nuevoUsuario.name,
-        'profilePictureUrl': nuevoUsuario.profilePictureUrl ?? '', // Si no hay imagen, deja el campo vacío
-        'latitud': nuevoUsuario.latitud,
-        'longitud': nuevoUsuario.longitud,
-      });
-
-      return nuevoUsuario;
+      return Usuario.fromFirebaseUser(user!, latitud: latitud, longitud: longitud);
     } catch (e) {
       print("Error al registrar: $e");
       return null;
