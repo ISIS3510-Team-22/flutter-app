@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:studyglide/widgets/customAppBar.dart';
 import '../constants/constants.dart'; // Import color and style constants
 
 class MainView extends StatelessWidget {
@@ -19,11 +20,8 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Study Glide', style: titleTextStyle),
-        backgroundColor: brightBlueColor,
-      ),
-      body: const Text('MAIN VIEW (LOGIN)', style: headerTextStyle),
+      appBar: const CustomAppBar(title: 'Home Page'),
+      body: const Text('MAIN VIEW', style: headerTextStyle),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
         showUnselectedLabels: true,

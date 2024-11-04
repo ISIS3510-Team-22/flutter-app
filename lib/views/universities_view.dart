@@ -18,9 +18,10 @@ class UniversitiesView extends StatelessWidget {
               foregroundColor: Colors.white,
               backgroundColor: darkBlueColor,
               title: const Text(
-                'UNIVERSITIES INFO',
+                'UNIVERSITIES',
                 style: headerTextStyle,
               ),
+              centerTitle: true,
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -63,10 +64,6 @@ class UniversitiesView extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
                                 child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context,
-                                        '/information/${university.name}');
-                                  },
                                   child: Container(
                                     height: 80,
                                     decoration: BoxDecoration(

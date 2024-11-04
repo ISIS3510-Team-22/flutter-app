@@ -21,6 +21,7 @@ class RecipeListView extends StatelessWidget {
                 'RECIPES',
                 style: headerTextStyle,
               ),
+              centerTitle: true,
             ),
             body: viewModel.recipes.isNotEmpty
                 ? ListView.builder(
@@ -45,6 +46,7 @@ class RecipeListView extends StatelessWidget {
                               style: subBodyTextStyle,
                             ),
                             iconColor: Colors.white,
+                            collapsedIconColor: Colors.white,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(
