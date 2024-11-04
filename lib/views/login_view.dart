@@ -50,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
               FormContainerWidget(
                 controller: _emailController,
                 hintText: "Email",
-                isPasswordField: false, onChanged: (value) {  },
+                isPasswordField: false,
+                onChanged: (value) {},
               ),
               const SizedBox(
                 height: 10,
@@ -58,7 +59,8 @@ class _LoginPageState extends State<LoginPage> {
               FormContainerWidget(
                 controller: _passwordController,
                 hintText: "Password",
-                isPasswordField: true, onChanged: (value) {  },
+                isPasswordField: true,
+                onChanged: (value) {},
               ),
               const SizedBox(
                 height: 30,
@@ -157,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       showToast(message: "User is successfully signed in");
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushNamed(context, "/information");
     } else {
       showToast(message: "Some error occurred");
     }
