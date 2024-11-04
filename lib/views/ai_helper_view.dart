@@ -58,71 +58,69 @@ class _AiHelperViewState extends State<AiHelperView> {
   }
 
   void _sendMessage() async {
-  if (_controller.text.isNotEmpty) {
-    final mensaje = Mensaje(
-      senderId: currentUser!.uid,
-      receiverId: "AI",
-      message: _controller.text,
-      timestamp: DateTime.now().millisecondsSinceEpoch,
-    );
-
-    // Agrega el mensaje del usuario al chat inmediatamente
-    setState(() {
-      messages.add(mensaje.toMap());
-    });
-    _controller.clear();
-    _scrollToBottom();
-
-    try {
-      // Prueba la solicitud usando GET en lugar de POST
-      final response = await http.post(
-        Uri.parse('https://chat.notadev.lat/chat'),
-        headers: <String, String>{
-          "x-api-key": "3b82626eab615f1343d276b6ea7a95b2112b7e5a3a8400fb7fcccb00fd2b8f2f56141594a2c5503fc8db715faac59c460ae08d4ab74ca888f1fc0a25e3524af5",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(<String, String>{
-          "content": mensaje.message,
-        }),
-      );
-
-    
-
-      // Crear mensaje de respuesta de la IA
-      final respuesta = Mensaje(
-        senderId: "AI",
-        receiverId: currentUser!.uid,
-        message: response.body,
+    if (_controller.text.isNotEmpty) {
+      final mensaje = Mensaje(
+        senderId: currentUser!.uid,
+        receiverId: "AI",
+        message: _controller.text,
         timestamp: DateTime.now().millisecondsSinceEpoch,
       );
 
-      // Agregar el mensaje de respuesta de la IA a la lista de mensajes
+      // Agrega el mensaje del usuario al chat inmediatamente
       setState(() {
-        messages.add(respuesta.toMap());
+        messages.add(mensaje.toMap());
       });
-
-      // Guardar mensajes en Firestore
-      await _fire.guardarMensaje(currentUser!.uid, mensaje);
-      await _fire.guardarMensaje(currentUser!.uid, respuesta);
+      _controller.clear();
       _scrollToBottom();
-    } catch (e) {
-      // Manejo de errores en la solicitud HTTP
-      print("Error al obtener la respuesta de la IA: $e");
 
-      // En caso de error, agrega un mensaje de error
-      setState(() {
-        messages.add({
-          'senderId': 'AI',
-          'receiverId': currentUser!.uid,
-          'message': 'Error: Unable to connect to AI service.',
-          'timestamp': DateTime.now().millisecondsSinceEpoch,
+      try {
+        // Prueba la solicitud usando GET en lugar de POST
+        final response = await http.post(
+          Uri.parse('https://chat.notadev.lat/chat'),
+          headers: <String, String>{
+            "x-api-key":
+                "3b82626eab615f1343d276b6ea7a95b2112b7e5a3a8400fb7fcccb00fd2b8f2f56141594a2c5503fc8db715faac59c460ae08d4ab74ca888f1fc0a25e3524af5",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode(<String, String>{
+            "content": mensaje.message,
+          }),
+        );
+
+        // Crear mensaje de respuesta de la IA
+        final respuesta = Mensaje(
+          senderId: "AI",
+          receiverId: currentUser!.uid,
+          message: response.body,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+        );
+
+        // Agregar el mensaje de respuesta de la IA a la lista de mensajes
+        setState(() {
+          messages.add(respuesta.toMap());
         });
-      });
-      _scrollToBottom();
+
+        // Guardar mensajes en Firestore
+        await _fire.guardarMensaje(currentUser!.uid, mensaje);
+        await _fire.guardarMensaje(currentUser!.uid, respuesta);
+        _scrollToBottom();
+      } catch (e) {
+        // Manejo de errores en la solicitud HTTP
+        print("Error al obtener la respuesta de la IA: $e");
+
+        // En caso de error, agrega un mensaje de error
+        setState(() {
+          messages.add({
+            'senderId': 'AI',
+            'receiverId': currentUser!.uid,
+            'message': 'Error: Unable to connect to AI service.',
+            'timestamp': DateTime.now().millisecondsSinceEpoch,
+          });
+        });
+        _scrollToBottom();
+      }
     }
   }
-}
-
 
   void _clearMessages() {
     setState(() {
@@ -199,6 +197,46 @@ class _AiHelperViewState extends State<AiHelperView> {
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,
+        showUnselectedLabels: true,
+        unselectedItemColor: darkBlueColor,
+        selectedItemColor: darkBlueColor,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/information');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/chat');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/news');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/ai_helper');
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description),
+            label: 'Information',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'News',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.smart_toy),
+            label: 'AI Helper',
           ),
         ],
       ),

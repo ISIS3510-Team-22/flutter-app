@@ -21,7 +21,7 @@ class StudyGlideApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Study Glide',
+      title: 'StudyGlide',
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: analytics),
       ],

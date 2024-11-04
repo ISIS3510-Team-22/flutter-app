@@ -23,7 +23,7 @@ class MainView extends StatelessWidget {
         title: const Text('Study Glide', style: titleTextStyle),
         backgroundColor: brightBlueColor,
       ),
-      body: const Text('MAIN VIEW (LOGIN)', style: headerTextStyle),
+      body: const Text('MAIN VIEW', style: headerTextStyle),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
         showUnselectedLabels: true,
