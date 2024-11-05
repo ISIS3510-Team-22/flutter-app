@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
+import 'package:studyglide/widgets/customAppBar.dart';
 import '../viewmodels/info_mostused_viewmodel.dart';
 
 class InformationView extends StatelessWidget {
@@ -13,20 +14,13 @@ class InformationView extends StatelessWidget {
       child:
           Consumer<InfoMostUsedViewModel>(builder: (context, viewModel, child) {
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: darkBlueColor,
-            foregroundColor: Colors.white,
-            title: const Text(
-              'INFORMATION',
-              style: headerTextStyle,
-            ),
-            centerTitle: true,
+          appBar: const CustomAppBar(
+            title: 'INFORMATION',
             actions: [
               IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: () {
-                  // Action for calendar icon
-                },
+                icon: Icon(Icons.calendar_today),
+                color: Colors.white,
+                onPressed: null,
               ),
             ],
           ),

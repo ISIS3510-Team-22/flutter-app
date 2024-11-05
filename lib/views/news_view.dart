@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studyglide/widgets/customAppBar.dart';
 import '../constants/constants.dart';
 import './web_view.dart';
 
@@ -24,14 +25,15 @@ class NewsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: darkBlueColor,
-        foregroundColor: Colors.white,
-        title: const Text(
-          'NEWS',
-          style: headerTextStyle,
-        ),
-        centerTitle: true,
+      appBar: const CustomAppBar(
+        title: 'NEWS',
+        actions: [
+          IconButton(
+            icon: Icon(Icons.newspaper),
+            onPressed: null,
+            color: Colors.white,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
