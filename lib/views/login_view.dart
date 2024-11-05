@@ -33,11 +33,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      if (result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi)) {
-        _showConnectionStatus("Connection restored", Colors.green);
-      } else {
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
         _showConnectionStatus("No internet connection", Colors.red);
+      } else {
+        _showConnectionStatus("Internet connection restored", Colors.green);
       }
     });
   }
