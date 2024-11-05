@@ -8,11 +8,20 @@ class RecipeViewModel extends ChangeNotifier {
   List<Recipe> _recipes = [];
   List<Recipe> get recipes => _recipes;
 
-  // Fetch recipes and notify the view
-  void fetchRecipes() {
-    _recipeService.getRecipes().listen((recipeList) {
-      _recipes = recipeList;
-      notifyListeners(); // Notifies the View to rebuild with new data
-    });
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  Future<void> fetchRecords() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _recipes = await _recipeService.getRecipes();
+    } catch (e) {
+      // Handle error (e.g., show a toast or a snackbar)
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }
