@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,6 +28,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  bool _isOffline = false;
+  String _connectionMessage = "";
+  Color _connectionColor = Colors.transparent;
   bool isSigningUp = false;
 
   @override
@@ -35,6 +42,33 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordController.addListener(checkPassword);
     _emailController.addListener(isValidEmail);
     _confirmPasswordController.addListener(passwordMatch);
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.mobile) ||
+          result.contains(ConnectivityResult.wifi)) {
+        _showConnectionStatus("Connection restored", Colors.green);
+      } else {
+        _showConnectionStatus("No internet connection", Colors.red);
+      }
+    });
+  }
+
+  void _showConnectionStatus(String message, Color color) {
+    setState(() {
+      _connectionMessage = message;
+      _connectionColor = color;
+      _isOffline = true;
+    });
+
+    // Ocultar el banner después de unos segundos si la conexión se restaura
+    if (color == Colors.green) {
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() {
+          _isOffline = false;
+        });
+      });
+    }
   }
 
   void checkPassword() {
@@ -42,10 +76,25 @@ class _SignUpPageState extends State<SignUpPage> {
 
     setState(() {
       // Regular expression to verify the password requirements
-      containChar = text.length >= 8;
-      containMayus = RegExp(r'[A-Z]').hasMatch(text);
-      containNumber = RegExp(r'[0-9]').hasMatch(text);
-      containEspecial = RegExp(r'[!@#\$&*~]').hasMatch(text);
+      if (text.isNotEmpty) {
+        if (RegExp(r'[A-Z]').hasMatch(text) &
+            RegExp(r'[0-9]').hasMatch(text) &
+            RegExp(r'[!@#\$&*~]').hasMatch(text) &
+            (text.length >= 8)) {
+          containChar = true;
+          containMayus = RegExp(r'[A-Z]').hasMatch(text);
+          containNumber = RegExp(r'[0-9]').hasMatch(text);
+          containEspecial = RegExp(r'[!@#\$&*~]').hasMatch(text);
+        } else {
+          containChar = false;
+          containMayus = false;
+          containNumber = false;
+          containEspecial = false;
+        }
+        passwordHasChars = true;
+      } else {
+        passwordHasChars = false;
+      }
     });
   }
 
@@ -56,7 +105,12 @@ class _SignUpPageState extends State<SignUpPage> {
       final RegExp emailRegex = RegExp(
         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
       );
-      validEmail = emailRegex.hasMatch(email);
+      if (email.isNotEmpty) {
+        validEmail = emailRegex.hasMatch(email);
+        emailHasChars = true;
+      } else {
+        emailHasChars = false;
+      }
     });
   }
 
@@ -64,10 +118,11 @@ class _SignUpPageState extends State<SignUpPage> {
     final password = _passwordController.text;
     final confirmation = _confirmPasswordController.text;
     setState(() {
-      if (password == confirmation) {
-        passwordEqual = true;
+      if (password.isNotEmpty) {
+        passwordEqual = (password == confirmation);
+        confirmHasChars = true;
       } else {
-        passwordEqual = false;
+        confirmHasChars = false;
       }
     });
   }
@@ -78,6 +133,9 @@ class _SignUpPageState extends State<SignUpPage> {
   bool containEspecial = false;
   bool validEmail = false;
   bool passwordEqual = false;
+  bool emailHasChars = false;
+  bool passwordHasChars = false;
+  bool confirmHasChars = false;
 
   @override
   void dispose() {
@@ -91,208 +149,216 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                "assets/banner.svg",
-                height: 140,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              FormContainerWidget(
-                controller: _usernameController,
-                hintText: "Username",
-                isPasswordField: false,
-                onChanged: (text) {},
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FormContainerWidget(
-                controller: _emailController,
-                hintText: "Email",
-                isPasswordField: false,
-                onChanged: (text) {},
-              ),
-              Visibility(
-                  visible: !validEmail,
-                  child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Invalid Email",
-                          style: TextStyle(
-                            fontFamily: 'WorkSans',
-                            fontSize: 16,
-                            color: Colors.red,
-                          ),
-                        )
-                      ])),
-              const SizedBox(
-                height: 10,
-              ),
-              FormContainerWidget(
-                controller: _passwordController,
-                hintText: "Password",
-                isPasswordField: true,
-                onChanged: (text) {
-                  checkPassword();
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FormContainerWidget(
-                controller: _confirmPasswordController,
-                hintText: "Confirm Password",
-                isPasswordField: true,
-                onChanged: (text) {
-                  //
-                },
-              ),
-              Visibility(
-                  visible: !passwordEqual,
-                  child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "The password doesn´t match",
-                          style: TextStyle(
-                            fontFamily: 'WorkSans',
-                            fontSize: 16,
-                            color: Colors.red,
-                          ),
-                        )
-                      ])),
-              const SizedBox(
-                height: 15,
-              ),
-              Column(
+      body: Stack(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "The password must have at least 8 characters",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containChar ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  Text(
-                    "The password must have at least 1 uppercase letter",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containMayus ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  Text(
-                    "The password must have at least 1 special character",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containEspecial ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  Text(
-                    "The password must have at least 1 number",
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 16,
-                      color: containNumber ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              GestureDetector(
-                onTap: () {
-                  _signUp();
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: darkBlueBottonColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                      child: isSigningUp
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(
-                              "Sign Up",
-                              style: bodyTextStyle,
-                            )),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Already have an account?",
-                    style: subBodyTextStyle,
+                  SvgPicture.asset(
+                    "assets/banner.svg",
+                    height: 140,
                   ),
                   const SizedBox(
-                    width: 5,
+                    height: 30,
+                  ),
+                  FormContainerWidget(
+                    controller: _usernameController,
+                    hintText: "Username",
+                    isPasswordField: false,
+                    onChanged: (text) {},
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  FormContainerWidget(
+                    controller: _emailController,
+                    hintText: "Email",
+                    isPasswordField: false,
+                    onChanged: (text) {},
+                  ),
+                  Visibility(
+                      visible: !validEmail & emailHasChars,
+                      child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "Invalid Email",
+                              style: TextStyle(
+                                fontFamily: 'WorkSans',
+                                fontSize: 16,
+                                color: Colors.red,
+                              ),
+                            )
+                          ])),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  FormContainerWidget(
+                    controller: _passwordController,
+                    hintText: "Password",
+                    isPasswordField: true,
+                    onChanged: (text) {
+                      checkPassword();
+                    },
+                  ),
+                  Visibility(
+                    visible: !(containChar &
+                            containEspecial &
+                            containMayus &
+                            containNumber) &
+                        passwordHasChars,
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "6+ chars, 1 uppercase, 1 special & 1 number",
+                          style: TextStyle(
+                            fontFamily: 'WorkSans',
+                            fontSize: 16,
+                            color: Colors.red,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  FormContainerWidget(
+                    controller: _confirmPasswordController,
+                    hintText: "Confirm Password",
+                    isPasswordField: true,
+                    onChanged: (text) {
+                      //
+                    },
+                  ),
+                  Visibility(
+                      visible: !passwordEqual & confirmHasChars,
+                      child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "The password doesn´t match",
+                              style: TextStyle(
+                                fontFamily: 'WorkSans',
+                                fontSize: 16,
+                                color: Colors.red,
+                              ),
+                            )
+                          ])),
+                  const SizedBox(
+                    height: 30,
                   ),
                   GestureDetector(
-                      onTap: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                            (route) => false);
-                      },
-                      child: const Text(
-                        "Login",
-                        style: buttonTextStyle,
-                      ))
+                    onTap: () {
+                      _signUp();
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: darkBlueBottonColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                          child: isSigningUp
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  "Sign Up",
+                                  style: bodyTextStyle,
+                                )),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Already have an account?",
+                        style: subBodyTextStyle,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginPage()),
+                                (route) => false);
+                          },
+                          child: const Text(
+                            "Login",
+                            style: buttonTextStyle,
+                          ))
+                    ],
+                  )
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),
+          if (_isOffline)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: _connectionColor,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Center(
+                  child: Text(
+                    _connectionMessage,
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
 
   void _signUp() async {
     // Verificar si todos los booleanos son verdaderos
-    if (!validEmail & !containChar & !containMayus & !containNumber & !containEspecial){
+    if (!validEmail &
+        !containChar &
+        !containMayus &
+        !containNumber &
+        !containEspecial) {
       showToast(message: "Fill correctly the spaces");
       return;
-    }
-    
-    else if (!validEmail) {
+    } else if (!validEmail) {
       showToast(message: "Invalid Email");
       return;
-    }
-
-    else if (!containChar || !containMayus || !containNumber || !containEspecial) {
+    } else if (!containChar ||
+        !containMayus ||
+        !containNumber ||
+        !containEspecial) {
       showToast(message: "Password does not meet the requirements");
       return;
-    }
-
-    else if (!passwordEqual) {
+    } else if (!passwordEqual) {
       showToast(message: "Passwords do not match");
+      return;
+    } else if (_isOffline){
+      showToast(message: "No internet connection");
       return;
     }
 
@@ -301,38 +367,39 @@ class _SignUpPageState extends State<SignUpPage> {
       isSigningUp = true;
     });
 
-  String email = _emailController.text;
-  String password = _passwordController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
 
-  // Obtener la ubicación actual
-  LocationService locationService = LocationService();
-  Position? posicion = await locationService.obtenerUbicacionActual();
+    // Obtener la ubicación actual
+    LocationService locationService = LocationService();
+    Position? posicion = await locationService.obtenerUbicacionActual();
 
-  if (posicion != null) {
-    double latitud = posicion.latitude;
-    double longitud = posicion.longitude;
+    if (posicion != null) {
+      double latitud = posicion.latitude;
+      double longitud = posicion.longitude;
 
-    // Llamar a la función de registro con la latitud y longitud reales
-    User? user = await _auth.signUpWithEmailAndPassword(email, password, latitud, longitud);
+      // Llamar a la función de registro con la latitud y longitud reales
+      User? user = await _auth.signUpWithEmailAndPassword(
+          email, password, latitud, longitud, _usernameController.text);
 
-    setState(() {
-      isSigningUp = false;
-    });
+      setState(() {
+        isSigningUp = false;
+      });
 
-    setState(() {
-      isSigningUp = false;
-    });
+      setState(() {
+        isSigningUp = false;
+      });
 
-    if (user != null) {
-      showToast(message: "User is successfully created");
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/home");
+      if (user != null) {
+        showToast(message: "User is successfully created");
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, "/home");
+      } else {
+        showToast(message: "Some error happened");
+        showToast(message: "Some error happened");
+      }
     } else {
-      showToast(message: "Some error happened");
-      showToast(message: "Some error happened");
+      showToast(message: "Unable to obtain location.");
     }
-  } else {
-    showToast(message: "Unable to obtain location.");
   }
-}
 }

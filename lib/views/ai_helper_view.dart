@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:studyglide/models/message_chatAI_model.dart';
 import 'package:studyglide/services/firestore_chatIA_service.dart';
+import 'package:studyglide/widgets/customAppBar.dart';
 import '../constants/constants.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:http/http.dart' as http;
@@ -131,19 +132,13 @@ class _AiHelperViewState extends State<AiHelperView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: darkBlueColor,
-        foregroundColor: Colors.white,
-        title: const Center(
-          child: Text(
-            "AI HELPER",
-            style: headerTextStyle,
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: 'AI Helper',
         actions: [
           IconButton(
             icon: const Icon(Icons.cleaning_services),
             onPressed: _clearMessages,
+            color: Colors.white,
           ),
         ],
       ),

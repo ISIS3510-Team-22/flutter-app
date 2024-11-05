@@ -25,6 +25,12 @@ const TextStyle headerTextStyle = TextStyle(
   color: Colors.white,
 );
 
+const TextStyle optionsTextStyle = TextStyle(
+  fontFamily: 'NovaMono',
+  fontSize: 20,
+  color: Colors.white,
+);
+
 const TextStyle bodyTextStyle = TextStyle(
   fontFamily: 'WorkSans',
   fontSize: 18,
