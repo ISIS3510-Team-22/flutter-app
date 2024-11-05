@@ -1,7 +1,7 @@
 class ChatModel {
   final String id; // ID único del chat
   final String usuarioId; // ID del usuario en el chat
-  final String username;
+  late final String username;
   final String lastMessage;
   final double distance; // Distancia en km
   final String profilePictureUrl;

@@ -42,6 +42,9 @@ class MainView extends StatelessWidget {
             case 3:
               Navigator.pushNamed(context, '/ai_helper');
               break;
+            case 4:
+              Navigator.pushNamed(context, '/profile');
+              break;
           }
         },
         items: const [
@@ -60,6 +63,10 @@ class MainView extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.smart_toy),
             label: 'AI Helper',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
