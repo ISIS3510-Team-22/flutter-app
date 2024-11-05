@@ -38,7 +38,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       if (result != ConnectivityResult.none) {
         _sendOfflineMessages(); // Intenta enviar mensajes guardados cuando vuelva la conexión
       }
-    } as void Function(List<ConnectivityResult> event)?);
+    } );
   }
 
 

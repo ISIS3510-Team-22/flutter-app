@@ -21,13 +21,15 @@ class ConnectivityService {
 
   void _initialize() async {
     _offlineProfileUpdatesBox = await Hive.openBox('offline_profile_updates');
-    _offlineMessagesBox = await Hive.openBox('offline_messages'); 
-    _subscription = _connectivity.onConnectivityChanged.listen((result) {
+    _offlineMessagesBox = await Hive.openBox('offline_messages');
+
+    // Escuchar los cambios de conectividad
+    _subscription = _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
       if (result != ConnectivityResult.none) {
-        _sendOfflineMessages(); // Intenta enviar mensajes al recuperar conexión
+        _sendOfflineMessages();
         _profileService.syncOfflineProfileUpdates();
       }
-    }) as StreamSubscription<ConnectivityResult>?;
+    });
   }
 
   Future<void> _sendOfflineMessages() async {

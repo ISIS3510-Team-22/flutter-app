@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studyglide/services/connectivity_service.dart';
+import 'package:studyglide/services/profile_service.dart';
 import 'package:studyglide/views/edit_profile.dart';
 import '../constants/constants.dart';
 import '../services/auth_service.dart';
@@ -16,13 +17,26 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final AuthService _authService = AuthService();
   final FirestoreService _firestoreService = FirestoreService();
+  final ProfileService _profileService = ProfileService();
   final ConnectivityService _connectivityService = ConnectivityService();
   Usuario? _usuarioActual;
 
   @override
   void initState() {
     super.initState();
-    _cargarUsuario();
+    _sincronizarYcargarUsuario();
+  }
+
+  Future<void> _sincronizarYcargarUsuario() async {
+    // Sincronizar actualizaciones offline antes de cargar el perfil
+    await _profileService.syncOfflineProfileUpdates();
+    await _cargarUsuario();
+  }
+
+  @override
+  void dispose() {
+    _connectivityService.dispose();
+    super.dispose();
   }
 
   Future<void> _cargarUsuario() async {
@@ -37,6 +51,12 @@ class _ProfileViewState extends State<ProfileView> {
         });
       }
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _sincronizarYcargarUsuario();
   }
 
   // Navegación a la pantalla de edición de perfil
@@ -57,11 +77,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
-  @override
-  void dispose() {
-    _connectivityService.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
