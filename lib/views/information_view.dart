@@ -1,114 +1,145 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
+import '../viewmodels/info_mostused_viewmodel.dart';
 
 class InformationView extends StatelessWidget {
-  const InformationView({super.key});
+  InformationView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: darkBlueColor,
-        foregroundColor: Colors.white,
-        title: const Text(
-          'INFORMATION',
-          style: headerTextStyle,
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () {
-              // Action for calendar icon
+    return ChangeNotifierProvider(
+      create: (context) => InfoMostUsedViewModel()..getMostUsed(),
+      child:
+          Consumer<InfoMostUsedViewModel>(builder: (context, viewModel, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: darkBlueColor,
+            foregroundColor: Colors.white,
+            title: const Text(
+              'INFORMATION',
+              style: headerTextStyle,
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.calendar_today),
+                onPressed: () {
+                  // Action for calendar icon
+                },
+              ),
+            ],
+          ),
+          body: Container(
+            color: darkBlueColor,
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: _getSortedInformationTiles(viewModel, context),
+            ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: 1,
+            showUnselectedLabels: true,
+            unselectedItemColor: darkBlueColor,
+            selectedItemColor: darkBlueColor,
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  Navigator.pushNamed(context, '/information');
+                  break;
+                case 1:
+                  Navigator.pushNamed(context, '/chat');
+                  break;
+                case 2:
+                  Navigator.pushNamed(context, '/news');
+                  break;
+                case 3:
+                  Navigator.pushNamed(context, '/ai_helper');
+                  break;
+              }
             },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.description),
+                label: 'Information',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat),
+                label: 'Chat',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.public),
+                label: 'News',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.smart_toy),
+                label: 'AI Helper',
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Container(
-        color: darkBlueColor,
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            InformationTile(
-              title: 'Cooking & recipes while abroad',
-              onTap: () {
-                // Navigate to the Recipe List View
-                Navigator.pushNamed(context, '/information/recipes');
-              },
-            ),
-            InformationTile(
-              title: 'Mental Health',
-              onTap: () {
-                // Navigate to the Recipe List View
-                Navigator.pushNamed(context, '/information/mental_health');
-              },
-            ),
-            InformationTile(
-              title: 'Adapting to a new city',
-              onTap: () {
-                // Navigate to the Recipe List View
-                Navigator.pushNamed(context, '/information/adapting_tips');
-              },
-            ),
-            InformationTile(
-              title: 'Universities info',
-              onTap: () {
-                // Navigate to the Recipe List View
-                Navigator.pushNamed(context, '/information/universities_info');
-              },
-            ),
-            InformationTile(
-              title: 'Current exchanges available',
-              onTap: () {
-                // Navigate to the Recipe List View
-                Navigator.pushNamed(context, '/information/exchanges');
-              },
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        showUnselectedLabels: true,
-        unselectedItemColor: darkBlueColor,
-        selectedItemColor: darkBlueColor,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/information');
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/chat');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/news');
-              break;
-            case 3:
-              Navigator.pushNamed(context, '/ai_helper');
-              break;
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            label: 'Information',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.smart_toy),
-            label: 'AI Helper',
-          ),
-        ],
-      ),
+        );
+      }),
     );
   }
+}
+
+List<Widget> _getSortedInformationTiles(viewModel, context) {
+  // Define the list of tiles with their associated usage counts
+  final InfoMostUsedViewModel infoMostUsedViewModel = InfoMostUsedViewModel();
+
+  List<Map<String, dynamic>> tiles = [
+    {
+      'title': 'Cooking & recipes while abroad',
+      'count': viewModel.infoMostUseds.recipes,
+      'onTap': () {
+        infoMostUsedViewModel.updateField("recipes");
+        Navigator.pushNamed(context, '/information/recipes');
+      },
+    },
+    {
+      'title': 'Mental Health',
+      'count': viewModel.infoMostUseds.mental,
+      'onTap': () {
+        infoMostUsedViewModel.updateField("mental");
+        Navigator.pushNamed(context, '/information/mental_health');
+      },
+    },
+    {
+      'title': 'Adapting to a new city',
+      'count': viewModel.infoMostUseds.adapting,
+      'onTap': () {
+        infoMostUsedViewModel.updateField("adapting");
+        Navigator.pushNamed(context, '/information/adapting_tips');
+      },
+    },
+    {
+      'title': 'Universities info',
+      'count': viewModel.infoMostUseds.universities,
+      'onTap': () {
+        infoMostUsedViewModel.updateField("universities");
+        Navigator.pushNamed(context, '/information/universities_info');
+      },
+    },
+    {
+      'title': 'Current exchanges available',
+      'count': viewModel.infoMostUseds.exchanges,
+      'onTap': () {
+        infoMostUsedViewModel.updateField("exchanges");
+        Navigator.pushNamed(context, '/information/exchanges');
+      },
+    },
+  ];
+
+  // Sort tiles by count in descending order
+  tiles.sort((a, b) => b['count'].compareTo(a['count']));
+
+  // Convert sorted list into a list of InformationTile widgets
+  return tiles.map((tile) {
+    return InformationTile(
+      title: tile['title'],
+      onTap: tile['onTap'],
+    );
+  }).toList();
 }
 
 class InformationTile extends StatelessWidget {

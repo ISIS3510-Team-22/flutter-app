@@ -7,13 +7,13 @@ class NewsView extends StatelessWidget {
 
   final List<NewsItem> newsItems = [
     NewsItem(
-      title: "Planear Movilidad Académica",
+      title: "Academic Mobility",
       subtitle:
           "A continuación, encontrarás la información general para postularte...",
       url: "https://internacionalizacion.uniandes.edu.co/movilidad-academica",
     ),
     NewsItem(
-      title: "Intercambio Internacional y Doble Titulación",
+      title: "Mechanical Engineering International Exchanges",
       subtitle:
           "Consulta la oferta académica internacional en el Departamento de Ingeniería Mecánica.",
       url:
@@ -43,7 +43,7 @@ class NewsView extends StatelessWidget {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WebView(url: news.url),
+                  builder: (context) => WebView(url: news.url, appbar: true),
                 ),
               ),
               child: Card(
@@ -62,10 +62,11 @@ class NewsView extends StatelessWidget {
                         style: bodyTextStyle,
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        news.subtitle,
-                        style: subBodyTextStyle,
-                      ),
+                      SizedBox(
+                        width: 400,
+                        height: 300,
+                        child: WebView(url: news.url, appbar: false),
+                      )
                     ],
                   ),
                 ),

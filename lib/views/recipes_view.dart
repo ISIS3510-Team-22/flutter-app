@@ -10,7 +10,7 @@ class RecipeListView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Accessing the RecipeViewModel
     return ChangeNotifierProvider(
-      create: (context) => RecipeViewModel()..fetchRecipes(),
+      create: (context) => RecipeViewModel()..fetchRecords(),
       child: Consumer<RecipeViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(

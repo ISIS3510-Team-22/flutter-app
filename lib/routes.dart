@@ -15,7 +15,7 @@ import 'views/exchanges_availables_view.dart';
 final Map<String, WidgetBuilder> appRoutes = {
   '/': (context) => const LoginPage(),
   '/home': (context) => MainView(),
-  '/information': (context) => const InformationView(),
+  '/information': (context) => InformationView(),
   '/chat': (context) => const ChatListScreen(),
   '/news': (context) => NewsView(),
   '/ai_helper': (context) => const AiHelperView(),
