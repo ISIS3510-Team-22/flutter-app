@@ -26,6 +26,19 @@ class FirestoreChatiaService {
           }).toList();
         });
   }
+
+  Future<void> borrarMensajes(String userId) async {
+    try {
+      await _firestore.collection('ai_chats').doc(userId).collection('messages').get().then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+    } catch (e) {
+      // ignore: avoid_print
+      print('Error al borrar mensajes: $e');
+    }
+  }
   
   
 }

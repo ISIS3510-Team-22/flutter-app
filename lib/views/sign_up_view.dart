@@ -28,6 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  // ignore: unused_field
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isOffline = false;
   String _connectionMessage = "";
