@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:studyglide/models/message_chatAI_model.dart';
@@ -70,7 +71,9 @@ class _AiHelperViewState extends State<AiHelperView> {
       // Agrega el mensaje del usuario al chat inmediatamente
       setState(() {
         messages.add(mensaje.toMap());
+        // Tiempo en el que el usuario envía una pregunta
       });
+      DateTime questionSentTime = DateTime.now();
       _controller.clear();
       _scrollToBottom();
 
@@ -95,6 +98,14 @@ class _AiHelperViewState extends State<AiHelperView> {
           message: response.body,
           timestamp: DateTime.now().millisecondsSinceEpoch,
         );
+        // Tiempo en el que se recibe la respuesta
+        DateTime responseReceivedTime = DateTime.now();
+
+        // Tiempo de respuesta en milisegundos
+        int responseTime =
+            responseReceivedTime.difference(questionSentTime).inMilliseconds;
+
+        logResponseTime(responseTime);
 
         // Agregar el mensaje de respuesta de la IA a la lista de mensajes
         setState(() {
@@ -124,9 +135,19 @@ class _AiHelperViewState extends State<AiHelperView> {
   }
 
   void _clearMessages() {
-    setState(() {
+    setState(() async {
       messages.clear();
+      await _fire.borrarMensajes(currentUser!.uid);
     });
+  }
+
+  Future<void> logResponseTime(int responseTime) async {
+    await FirebaseAnalytics.instance.logEvent(
+      name: "ia_chat_response_time",
+      parameters: {
+        "response_time_ms": responseTime, // Tiempo de respuesta en milisegundos
+      },
+    );
   }
 
   @override
