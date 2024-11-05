@@ -16,8 +16,8 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   final FirestoreService _firestoreService = FirestoreService();
-  late double? latitudActual;
-  late double? longitudActual;
+  double? latitudActual;
+  double? longitudActual;
   late User? currentUser;
 
   @override
@@ -30,6 +30,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
   void obtenerUbicacionActual() async {
     // Solicitar la ubicación actual usando el paquete geolocator
     LocationPermission permission = await Geolocator.checkPermission();
+    // Solicitar la ubicación actual usando el paquete geolocator
+
 
     // Si no hay permisos, solicitarlos
     if (permission == LocationPermission.denied ||
@@ -48,6 +50,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
     // Obtener la ubicación actual
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    // Obtener la ubicación actual
+
 
     // Asignar la latitud y longitud obtenidas
     setState(() {
@@ -55,6 +59,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
       longitudActual = position.longitude;
     });
   }
+    // Asignar la latitud y longitud obtenidas
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -103,130 +110,80 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       .compareTo(distanciaB); // Ordenar de menor a mayor
                 });
 
-                // Construir la lista ordenada y filtrada
-                return ListView.builder(
-                  itemCount: filteredUsuarios.length,
-                  itemBuilder: (context, index) {
-                    final usuario = filteredUsuarios[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color:
-                              const Color(0xFF2C3E50), // Fondo oscuro similar
-                          borderRadius:
-                              BorderRadius.circular(20), // Bordes redondeados
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage:
-                                NetworkImage(usuario.profilePictureUrl ?? ''),
-                          ),
-                          title: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: const Color(
-                                  0xFF34495E), // Fondo del contenedor de texto
-                              borderRadius: BorderRadius.circular(
-                                  12), // Bordes redondeados
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Nombre y distancia en la misma fila (Row)
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      usuario.name,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${_firestoreService.calcularDistancia(latitudActual!, longitudActual!, usuario.latitud!, usuario.longitud!).toStringAsFixed(2)} km', // Mostrar distancia calculada
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                    height:
-                                        5), // Espacio entre nombre/distancia y el mensaje
-                                const Text(
-                                  'Toca para empezar a chatear',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          onTap: () {
-                            _crearChat(usuario);
-                          },
-                        ),
+              // Construir la lista ordenada y filtrada
+              return ListView.builder(
+                itemCount: filteredUsuarios.length,
+                itemBuilder: (context, index) {
+                  final usuario = filteredUsuarios[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF2C3E50), // Fondo oscuro similar
+                        borderRadius: BorderRadius.circular(20), // Bordes redondeados
                       ),
-                    );
-                  },
-                );
-              },
-            ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        showUnselectedLabels: true,
-        unselectedItemColor: darkBlueColor,
-        selectedItemColor: darkBlueColor,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/information');
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/chat');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/news');
-              break;
-            case 3:
-              Navigator.pushNamed(context, '/ai_helper');
-              break;
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            label: 'Information',
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(usuario.profilePictureUrl ?? ''),
+                        ),
+                        title: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF34495E), // Fondo del contenedor de texto
+                            borderRadius: BorderRadius.circular(12), // Bordes redondeados
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Nombre y distancia en la misma fila (Row)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    usuario.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${_firestoreService.calcularDistancia(latitudActual!, longitudActual!, usuario.latitud!, usuario.longitud!).toStringAsFixed(2)} km', // Mostrar distancia calculada
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5), // Espacio entre nombre/distancia y el mensaje
+                              const Text(
+                                'Toca para empezar a chatear',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onTap: () {
+                          _crearChat(usuario);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.smart_toy),
-            label: 'AI Helper',
-          ),
-        ],
-      ),
-    );
-  }
+  );
+}
+
 
   void _crearChat(Usuario usuario) async {
-    // Obtener el usuario actual
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) return;
+  // Obtener el usuario actual
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) return;
 
     // Generar un chatId único basado en los IDs de los usuarios
     String chatId = _generarChatId(currentUser.uid, usuario.id);
@@ -250,23 +207,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
       // Guardar el nuevo chat en Firestore
       await _firestoreService.guardarChat(nuevoChat);
 
-      // Navegar a la pantalla de detalles del chat
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChatDetailScreen(chat: nuevoChat),
-        ),
-      );
-    } else {
-      // Si ya existe el chat, navega directamente a él
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChatDetailScreen(chat: chatExistente),
-        ),
-      );
-    }
+    // Navegar a la pantalla de detalles del chat
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatDetailScreen(chat: nuevoChat),
+      ),
+    );
+  } else {
+    // Si ya existe el chat, navega directamente a él
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatDetailScreen(chat: chatExistente),
+      ),
+    );
   }
+}
 
 // Función para generar un chatId único para ambos usuarios
   String _generarChatId(String userId1, String userId2) {

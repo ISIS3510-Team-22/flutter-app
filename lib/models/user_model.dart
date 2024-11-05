@@ -19,7 +19,7 @@ class Usuario {
     return Usuario(
       id: user.uid,
       name: user.email!,
-      profilePictureUrl: null,
+      profilePictureUrl: "",
       latitud: latitud,
       longitud: longitud,
     );

@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:studyglide/models/chat_model.dart';
 import 'package:studyglide/models/message_model.dart';
 import 'package:studyglide/models/user_model.dart';
 
+
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   double calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
   const R = 6371; // Radio de la Tierra en kilómetros
@@ -115,12 +120,12 @@ double _gradosARadianes(double grados) {
 
   // Guardar un nuevo chat en Firestore
   Future<void> guardarChat(ChatModel chat) async {
-    try {
-      await _firestore.collection('chats').doc(chat.id).set(chat.toMap());
-    } catch (e) {
-      print('Error al guardar chat: $e');
-    }
+  try {
+    await _firestore.collection('chats').doc(chat.id).set(chat.toMap(), SetOptions(merge: true));
+  } catch (e) {
+    print('Error al guardar chat en Firestore: $e');
   }
+}
 
   Future<ChatModel?> obtenerChatPorId(String chatId) async {
   try {
@@ -147,10 +152,106 @@ double _gradosARadianes(double grados) {
     return null;
   }
 }
+// Obtener usuario por ID desde Firestore
+Future<Usuario?> obtenerUsuarioPorId(String userId) async {
+  try {
+    DocumentSnapshot doc = await _firestore.collection('usuarios').doc(userId).get();
 
-
-  
-
+    if (doc.exists) {
+      var data = doc.data() as Map<String, dynamic>;
+      return Usuario(
+        id: data['id'],
+        name: data['name'],
+        profilePictureUrl: data['profilePictureUrl'],
+        latitud: data['latitud'],
+        longitud: data['longitud'],
+      );
+    } else {
+      print('Usuario no encontrado.');
+      return null;
+    }
+  } catch (e) {
+    print('Error al obtener usuario: $e');
+    return null;
+  }
 }
+
+Future<String?> subirImagenPerfil(String userId, File imageFile) async {
+    try {
+      final ref = _storage.ref().child('profile_pictures/$userId');
+      await ref.putFile(imageFile);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      print('Error al subir imagen: $e');
+      return null;
+    }
+  }
+
+  Future<void> actualizarPerfilUsuario(String userId, {String? name, File? imageFile}) async {
+    try {
+      final data = <String, dynamic>{};
+
+      // Subir la imagen a Firebase Storage si se proporcionó
+      if (imageFile != null) {
+        final ref = _storage.ref().child('profile_pictures').child('$userId.jpg');
+        await ref.putFile(imageFile);
+        final downloadUrl = await ref.getDownloadURL();
+        data['profilePictureUrl'] = downloadUrl; // Agregar URL de imagen a `data`
+      }
+
+      // Actualizar el nombre si se proporciona
+      if (name != null && name.isNotEmpty) {
+        data['name'] = name;
+      }
+
+      // Actualizar Firestore solo si `data` tiene campos
+      if (data.isNotEmpty) {
+        await _firestore.collection('usuarios').doc(userId).update(data);
+      }
+    } catch (e) {
+      print('Error al actualizar perfil del usuario: $e');
+    }
+  }
+  Future<void> actualizarImagenPerfil(String userId, File imageFile) async {
+    try {
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      // Verificar que la cadena no esté vacía
+      if (base64Image.isNotEmpty) {
+        print('Base64 Image: $base64Image');
+        await _firestore.collection('usuarios').doc(userId).update({
+          'profilePictureUrl': base64Image,
+        });
+      } else {
+        print('Error: La imagen en base64 está vacía.');
+      }
+    } catch (e) {
+      print('Error al actualizar imagen de perfil del usuario: $e');
+    }
+  }
+
+  Future<void> updateUserProfile(String userId, {String? name, String? profilePictureUrl}) async {
+    try {
+      // Crea un mapa solo con los campos que no son nulos
+      Map<String, dynamic> data = {};
+      if (name != null) data['name'] = name;
+      if (profilePictureUrl != null) data['profilePictureUrl'] = profilePictureUrl;
+
+      // Actualiza los campos en Firestore
+      await _firestore.collection('usuarios').doc(userId).update(data);
+      print('Perfil actualizado en Firestore para $userId');
+    } catch (e) {
+      print('Error al actualizar perfil en Firestore: $e');
+      throw e;
+    }
+  }
+}
+
+
+
+
+
+
 
 

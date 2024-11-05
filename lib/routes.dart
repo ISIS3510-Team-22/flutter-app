@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studyglide/views/main_view.dart';
+import 'package:studyglide/views/profile.dart';
+//import 'views/main_view.dart';
 import 'views/information_view.dart';
 import 'views/chat_view.dart';
 import 'views/news_view.dart';
@@ -18,6 +20,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/information': (context) => InformationView(),
   '/chat': (context) => const ChatListScreen(),
   '/news': (context) => NewsView(),
+  '/profile': (context) => const ProfileView(),
   '/ai_helper': (context) => const AiHelperView(),
   '/information/recipes': (context) => const RecipeListView(),
   '/information/mental_health': (context) => const MentalHealthView(),

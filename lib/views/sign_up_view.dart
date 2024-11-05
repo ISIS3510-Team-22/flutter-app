@@ -368,8 +368,10 @@ class _SignUpPageState extends State<SignUpPage> {
       isSigningUp = true;
     });
 
-    String email = _emailController.text;
-    String password = _passwordController.text;
+
+
+  String email = _emailController.text;
+  String password = _passwordController.text;
 
     // Obtener la ubicación actual
     LocationService locationService = LocationService();
