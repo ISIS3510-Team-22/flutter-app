@@ -43,11 +43,14 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordController.addListener(checkPassword);
     _emailController.addListener(isValidEmail);
     _confirmPasswordController.addListener(passwordMatch);
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        _showConnectionStatus("No internet connection", Colors.red);
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.mobile) ||
+          result.contains(ConnectivityResult.wifi)) {
+        _showConnectionStatus("Connection restored", Colors.green);
       } else {
-        _showConnectionStatus("Internet connection restored", Colors.green);
+        _showConnectionStatus("No internet connection", Colors.red);
       }
     });
   }
@@ -393,7 +396,7 @@ class _SignUpPageState extends State<SignUpPage> {
       if (user != null) {
         showToast(message: "User is successfully created");
         // ignore: use_build_context_synchronously
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/information");
       } else {
         showToast(message: "Some error happened");
         showToast(message: "Some error happened");

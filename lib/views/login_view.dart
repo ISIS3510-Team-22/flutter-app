@@ -25,19 +25,21 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isOffline = false;
   String _connectionMessage = "";
   Color _connectionColor = Colors.transparent;
 
+  late StreamSubscription<List<ConnectivityResult>> subscription;
+
+
   @override
   void initState() {
     super.initState();
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        _showConnectionStatus("No internet connection", Colors.red);
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi)) {
+        _showConnectionStatus("Connection restored", Colors.green);
       } else {
-        _showConnectionStatus("Internet connection restored", Colors.green);
+        _showConnectionStatus("No internet connection", Colors.red);
       }
     });
   }
@@ -46,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _connectivitySubscription.cancel();
+    subscription.cancel();
     super.dispose();
   }
 

@@ -7,13 +7,12 @@ import '../services/firestore_service.dart';
 import '../services/profile_service.dart';
 
 class ConnectivityService {
-  final Connectivity _connectivity = Connectivity();
   final FirestoreService _firestoreService = FirestoreService();
   final ProfileService _profileService = ProfileService();
   late Box _offlineMessagesBox;
   // ignore: unused_field
   late Box _offlineProfileUpdatesBox;
-  StreamSubscription<ConnectivityResult>? _subscription;
+  late StreamSubscription<List<ConnectivityResult>> subscription;
 
   ConnectivityService() {
     _initialize();
@@ -24,12 +23,17 @@ class ConnectivityService {
     _offlineMessagesBox = await Hive.openBox('offline_messages');
 
     // Escuchar los cambios de conectividad
-    _subscription = _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
       if (result != ConnectivityResult.none) {
         _sendOfflineMessages();
         _profileService.syncOfflineProfileUpdates();
       }
     });
+  }
+
+  void dispose() {
+    subscription.cancel();
   }
 
   Future<void> _sendOfflineMessages() async {
@@ -58,7 +62,5 @@ class ConnectivityService {
     }
   }
 
-  void dispose() {
-    _subscription?.cancel();
-  }
+  
 }
