@@ -81,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
         if (RegExp(r'[A-Z]').hasMatch(text) &
             RegExp(r'[0-9]').hasMatch(text) &
             RegExp(r'[!@#\$&*~]').hasMatch(text) &
-            (text.length >= 8)) {
+            (text.length >= 6)) {
           containChar = true;
           containMayus = RegExp(r'[A-Z]').hasMatch(text);
           containNumber = RegExp(r'[0-9]').hasMatch(text);
@@ -396,7 +396,7 @@ class _SignUpPageState extends State<SignUpPage> {
       if (user != null) {
         showToast(message: "User is successfully created");
         // ignore: use_build_context_synchronously
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/information");
       } else {
         showToast(message: "Some error happened");
         showToast(message: "Some error happened");

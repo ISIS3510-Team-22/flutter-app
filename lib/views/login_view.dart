@@ -25,15 +25,17 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isOffline = false;
   String _connectionMessage = "";
   Color _connectionColor = Colors.transparent;
 
+  late StreamSubscription<List<ConnectivityResult>> subscription;
+
+
   @override
   void initState() {
     super.initState();
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
       if (result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi)) {
         _showConnectionStatus("Connection restored", Colors.green);
       } else {
@@ -46,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _connectivitySubscription.cancel();
+    subscription.cancel();
     super.dispose();
   }
 
@@ -90,9 +92,7 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       showToast(message: "User is successfully signed in");
       Navigator.pushNamed(context, "/information");
-    } else {
-      showToast(message: "Some error occurred");
-    }
+    } 
   }
 
   @override
