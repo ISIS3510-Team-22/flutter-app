@@ -125,7 +125,7 @@ class _AiHelperViewState extends State<AiHelperView> {
           messages.add({
             'senderId': 'AI',
             'receiverId': currentUser!.uid,
-            'message': 'Error: Unable to connect to AI service.',
+            'message': 'No internet connection',
             'timestamp': DateTime.now().millisecondsSinceEpoch,
           });
         });

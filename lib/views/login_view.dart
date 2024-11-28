@@ -92,9 +92,7 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       showToast(message: "User is successfully signed in");
       Navigator.pushNamed(context, "/information");
-    } else {
-      showToast(message: "Some error occurred");
-    }
+    } 
   }
 
   @override
