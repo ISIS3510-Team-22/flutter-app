@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:studyglide/models/offline_messages_model.dart';
 import 'package:studyglide/models/offline_profile_update_model.dart';
@@ -11,6 +12,14 @@ import 'services/connectivity_service.dart';
 
   ConnectivityService connectivityService = ConnectivityService();
 
+
+void configureFirestore() {
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true, // Habilita la persistencia offline
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED, // Ajusta el tamaño del caché si es necesario
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -21,7 +30,7 @@ void main() async {
   Hive.registerAdapter(OfflineProfileUpdateAdapter());
   await Hive.openBox('offline_messages');
   await Hive.openBox('offline_profile_updates');
-
+  configureFirestore();
 
   runApp(StudyGlideApp());
 }

@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ChatModel {
-  final String id; // ID único del chat
-  final String usuarioId; // ID del usuario en el chat
-  late final String username;
-  final String lastMessage;
-  final double distance; // Distancia en km
-  final String profilePictureUrl;
+   String id; // ID único del chat
+   String usuarioId; // ID del usuario en el chat
+   String username;
+   String lastMessage;
+   double distance; // Distancia en km
+   String profilePictureUrl;
 
   ChatModel({
     required this.id,
@@ -24,6 +26,18 @@ class ChatModel {
       lastMessage: map['lastMessage'] as String,
       distance: map['distance'] as double,
       profilePictureUrl: map['profilePictureUrl'] as String,
+    );
+  }
+
+  factory ChatModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>; // Convierte los datos a un Map
+    return ChatModel(
+      id: doc.id, // Firestore usa `id` como identificador del documento
+      usuarioId: data['usuarioId'],
+      username: data['username'] ?? 'Usuario desconocido',
+      lastMessage: data['lastMessage'] ?? '',
+      distance: (data['distance'] ?? 0.0).toDouble(),
+      profilePictureUrl: data['profilePictureUrl'] ?? '',
     );
   }
 
