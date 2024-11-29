@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studyglide/services/connectivity_service.dart';
+import 'package:studyglide/services/profile_service.dart';
 import 'package:studyglide/views/edit_profile.dart';
 import '../constants/constants.dart';
 import '../services/auth_service.dart';
@@ -17,13 +18,39 @@ class _ProfileViewState extends State<ProfileView> {
   final AuthService _authService = AuthService();
   final FirestoreService _firestoreService = FirestoreService();
   final ConnectivityService _connectivityService = ConnectivityService();
+  final ProfileService _profileService = ProfileService();
   Usuario? _usuarioActual;
 
   @override
   void initState() {
     super.initState();
-    _cargarUsuario();
+    _sincronizarPerfilOffline();
+    _cargarDatos();
   }
+
+  Future<void> _cargarDatos() async {
+    try {
+      Usuario? usuario = _authService.obtenerUsuarioActual();
+      final userId = usuario?.id;
+      final perfil = await _firestoreService.obtenerPerfil(userId!);
+
+      setState(() {
+        _usuarioActual = perfil;
+      });
+    } catch (e) {
+      print('Error al cargar datos: $e');
+    }
+  }
+
+  Future<void> _sincronizarPerfilOffline() async {
+  final isConnected = await _connectivityService.isConnected(); // Verifica la conectividad
+  if (isConnected) {
+    await _profileService.syncOfflineProfileUpdates();
+    print('Perfiles offline sincronizados.');
+  } else {
+    print('Sin conexión. No se pudo sincronizar el perfil.');
+  }
+}
 
   Future<void> _cargarUsuario() async {
     // Obtener el usuario actual autenticado
@@ -52,6 +79,7 @@ class _ProfileViewState extends State<ProfileView> {
 
       // Actualizar la vista de perfil si hay cambios
       if (result == true) {
+        await _profileService.syncOfflineProfileUpdates();
         _cargarUsuario(); // Vuelve a cargar el usuario para actualizar la vista
       }
     }

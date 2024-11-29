@@ -43,7 +43,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       () => _handleLogout(context),
                     ),
                     _buildMenuItem(context, 'OPTIONS', () {}),
-                    _buildMenuItem(context, 'PROFILE', () {}),
+                    _buildMenuItem(context, 'PROFILE', () {
+                      Navigator.pushNamed(context, '/profile');
+                    }),
                   ],
                 ),
               ),

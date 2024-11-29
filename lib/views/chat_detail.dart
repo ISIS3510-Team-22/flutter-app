@@ -1,3 +1,5 @@
+
+
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,11 +36,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     super.initState();
     _offlineMessagesBox = Hive.box('offline_messages');
     _sendOfflineMessages();
-    _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result != ConnectivityResult.none) {
-        _sendOfflineMessages(); // Intenta enviar mensajes guardados cuando vuelva la conexión
-      }
-    } as void Function(List<ConnectivityResult> event)?);
+    _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+  // Verifica si al menos uno de los resultados no es "none"
+  if (results.any((result) => result != ConnectivityResult.none)) {
+    _sendOfflineMessages(); // Intenta enviar mensajes guardados cuando vuelve la conexión
+  }
+});
   }
 
 
@@ -54,7 +57,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       );
 
       // Verificar conexión a internet
-      if (await _isConnected()) {
+      if (await isConnected()) {
         await _firestoreService.guardarMensaje(widget.chat.id, mensaje);
       } else {
         _saveMessageOffline(mensaje);
@@ -62,16 +65,16 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       _messageController.clear();
     }
   }
-
-  // Verificar si hay conexión a internet
-  Future<bool> _isConnected() async {
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
-    }
+  Future<bool> isConnected() async {
+  try {
+    final result = await InternetAddress.lookup('google.com');
+    return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  } catch (e) {
+    print('Error al verificar conexión: $e');
+    return false;
   }
+}
+
 
   // Guardar mensaje offline en Hive
   void _saveMessageOffline(Mensaje mensaje) {
@@ -91,7 +94,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
 // Enviar mensajes offline cuando hay conexión
 Future<void> _sendOfflineMessages() async {
-  if (await _isConnected()) {  // Verifica la conexión a internet
+  if (await isConnected()) {  // Verifica la conexión a internet
     final messages = List<OfflineMessage>.from(_offlineMessagesBox.get(widget.chat.id, defaultValue: <OfflineMessage>[]) as List);
     if (messages.isNotEmpty) {
       for (var offlineMessage in messages) {
@@ -155,7 +158,7 @@ void listarMensajesOffline() {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
+                print(widget.chat.username);
                 final mensajes = snapshot.data!;
                 return ListView.builder(
                   itemCount: mensajes.length,

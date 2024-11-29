@@ -59,9 +59,47 @@ double _gradosARadianes(double grados) {
     return usuarios;
   } catch (e) {
     print('Error al obtener usuarios: $e');
+    return obtenerUsuariosDesdeCache(latitudActual, longitudActual);
+  }
+}
+
+  Future<List<Usuario>> obtenerUsuariosDesdeCache(double latitudActual, double longitudActual) async {
+  try {
+    // Intentar cargar los usuarios desde el caché
+    QuerySnapshot snapshot = await _firestore
+        .collection('usuarios')
+        .get(const GetOptions(source: Source.cache));
+
+    // Procesar los usuarios obtenidos del caché
+    return _procesarUsuarios(snapshot, latitudActual, longitudActual);
+  } catch (e) {
+    print('Error al obtener usuarios desde el caché: $e');
     return [];
   }
 }
+
+  List<Usuario> _procesarUsuarios(QuerySnapshot snapshot, double latitudActual, double longitudActual) {
+  List<Usuario> usuarios = snapshot.docs.map((doc) {
+    var data = doc.data() as Map<String, dynamic>;
+    return Usuario(
+      id: data['id'],
+      name: data['name'],
+      profilePictureUrl: data['profilePictureUrl'],
+      latitud: data['latitud'],
+      longitud: data['longitud'],
+    );
+  }).toList();
+
+  // Filtrar y ordenar usuarios por distancia
+  usuarios.sort((a, b) {
+    double distanciaA = calcularDistancia(latitudActual, longitudActual, a.latitud!, a.longitud!);
+    double distanciaB = calcularDistancia(latitudActual, longitudActual, b.latitud!, b.longitud!);
+    return distanciaA.compareTo(distanciaB); // Ordenar de menor a mayor distancia
+  });
+
+  return usuarios;
+}
+
 
   Future<void> guardarUsuario(Usuario usuario) async {
     try {
@@ -246,6 +284,46 @@ Future<String?> subirImagenPerfil(String userId, File imageFile) async {
       throw e;
     }
   }
+
+
+  Future<Usuario> obtenerPerfil(String userId) async {
+    try {
+      // Intentar cargar desde el servidor
+      final snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(userId)
+          .get(const GetOptions(source: Source.server));
+      return Usuario.fromFirestore(snapshot);
+    } catch (e) {
+      print('Error al cargar perfil del servidor: $e');
+      // Cargar desde el caché si no hay conexión
+      final snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(userId)
+          .get(const GetOptions(source: Source.cache));
+      return Usuario.fromFirestore(snapshot);
+    }
+  }
+
+  // Obtener los chats (Servidor o Caché)
+  Future<List<ChatModel>> obtenerChats() async {
+    try {
+      // Intentar cargar desde el servidor
+      final snapshot = await FirebaseFirestore.instance
+          .collection('chats')
+          .get(const GetOptions(source: Source.server));
+      return snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList();
+    } catch (e) {
+      print('Error al cargar chats del servidor: $e');
+      // Cargar desde el caché si no hay conexión
+      final snapshot = await FirebaseFirestore.instance
+          .collection('chats')
+          .get(const GetOptions(source: Source.cache));
+      return snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList();
+    }
+  }
+
+
 }
 
 

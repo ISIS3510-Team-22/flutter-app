@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -83,11 +84,7 @@ class ProfileService {
   }
 
   Future<bool> _isConnected() async {
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
-    }
-  }
+  final List<ConnectivityResult> results = await Connectivity().checkConnectivity();
+  return results.any((result) => result != ConnectivityResult.none);
+}
 }

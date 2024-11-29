@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Usuario {
@@ -22,6 +23,17 @@ class Usuario {
       profilePictureUrl: "",
       latitud: latitud,
       longitud: longitud,
+    );
+  }
+
+  factory Usuario.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Usuario(
+      id: doc.id,
+      name: data['name'] ?? 'Sin nombre',
+      profilePictureUrl: data['profilePictureUrl'],
+      latitud: (data['latitud'] ?? 0.0).toDouble(),
+      longitud: (data['longitud'] ?? 0.0).toDouble(),
     );
   }
 }

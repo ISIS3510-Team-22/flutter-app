@@ -25,6 +25,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     super.initState();
     obtenerUbicacionActual();
     currentUser = FirebaseAuth.instance.currentUser;
+    
   }
 
   void obtenerUbicacionActual() async {
@@ -141,17 +142,22 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    usuario.name,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                  Flexible(
+                                    child: Text(
+                                      usuario.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  Text(
-                                    '${_firestoreService.calcularDistancia(latitudActual!, longitudActual!, usuario.latitud!, usuario.longitud!).toStringAsFixed(2)} km', // Mostrar distancia calculada
-                                    style: const TextStyle(
-                                      color: Colors.white70,
+                                  Flexible(
+                                    child: Text(
+                                      '${_firestoreService.calcularDistancia(latitudActual!, longitudActual!, usuario.latitud!, usuario.longitud!).toStringAsFixed(2)} km', // Mostrar distancia calculada
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -216,6 +222,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
     );
   } else {
     // Si ya existe el chat, navega directamente a él
+    chatExistente.username = usuario.name;
+    chatExistente.profilePictureUrl = usuario.profilePictureUrl ?? '';
     Navigator.push(
       context,
       MaterialPageRoute(

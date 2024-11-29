@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
 import '../models/offline_messages_model.dart';
@@ -13,7 +14,8 @@ class ConnectivityService {
   late Box _offlineMessagesBox;
   // ignore: unused_field
   late Box _offlineProfileUpdatesBox;
-  StreamSubscription<ConnectivityResult>? _subscription;
+  late final StreamSubscription<List<ConnectivityResult>> _subscription;
+
 
   ConnectivityService() {
     _initialize();
@@ -22,12 +24,13 @@ class ConnectivityService {
   void _initialize() async {
     _offlineProfileUpdatesBox = await Hive.openBox('offline_profile_updates');
     _offlineMessagesBox = await Hive.openBox('offline_messages'); 
-    _subscription = _connectivity.onConnectivityChanged.listen((result) {
-      if (result != ConnectivityResult.none) {
-        _sendOfflineMessages(); // Intenta enviar mensajes al recuperar conexión
-        _profileService.syncOfflineProfileUpdates();
-      }
-    }) as StreamSubscription<ConnectivityResult>?;
+    _subscription = _connectivity.onConnectivityChanged.listen((results) {
+    // Verifica si hay conectividad (al menos un resultado que no sea 'none')
+    if (results.any((result) => result != ConnectivityResult.none)) {
+      _sendOfflineMessages(); // Envía mensajes al recuperar conexión
+      _profileService.syncOfflineProfileUpdates();
+    }
+  });
   }
 
   Future<void> _sendOfflineMessages() async {
@@ -56,7 +59,18 @@ class ConnectivityService {
     }
   }
 
+  Future<bool> isConnected() async {
+  try {
+    final result = await InternetAddress.lookup('google.com');
+    return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  } catch (e) {
+    print('Error al verificar conexión: $e');
+    return false;
+  }
+}
+
+
   void dispose() {
-    _subscription?.cancel();
+    _subscription.cancel();
   }
 }
