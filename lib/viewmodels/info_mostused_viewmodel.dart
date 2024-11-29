@@ -31,65 +31,32 @@ class InfoMostUsedViewModel extends ChangeNotifier {
     if (storedData != null) {
       _infoMostUseds = InfoMostUsed.fromJson(jsonDecode(storedData));
       notifyListeners(); // Notify listeners if we load from local storage
-    } else {
-      if (await _checkConnectivity()) {
-        log("No internet connection. Cannot fetch most used info.");
-      } else {
-        final InfoMostUsedService infoMostUsedService = InfoMostUsedService();
-        infoMostUsedService.getInfoMostUsed().listen((infoList) {
-          _infoMostUseds = infoList[0];
-          notifyListeners(); // Notifies the View to rebuild with new data
-
-          // Save the fetched data to Shared Preferences
-          prefs.setString('infoMostUsed', jsonEncode(_infoMostUseds.toJson()));
-        });
-      }
     }
-  }
-
-  void updateField(String field) async {
-    // Save the field update locally
-    _incrementLocalField(field); // Update the local state
-    notifyListeners(); // Notify listeners to rebuild the UI with updated local data
-
-    // Check connectivity
     if (await _checkConnectivity()) {
-      log("No internet connection. Field update saved locally, will sync later.");
+      log("No internet connection. Cannot fetch most used info.");
     } else {
       final InfoMostUsedService infoMostUsedService = InfoMostUsedService();
+      infoMostUsedService.getInfoMostUsed().listen((infoList) {
+        _infoMostUseds = infoList[0];
+        notifyListeners(); // Notifies the View to rebuild with new data
 
-      // Send the update to the database
-      infoMostUsedService.incrementField("uses", field).then((_) async {
-        // Once the data is successfully updated in the database, sync with local storage
-        final prefs = await SharedPreferences.getInstance();
+        // Save the fetched data to Shared Preferences
         prefs.setString('infoMostUsed', jsonEncode(_infoMostUseds.toJson()));
-        log("Field synchronized with database and local storage updated.");
-      }).catchError((error) {
-        log("Failed to synchronize field with database: $error");
       });
     }
   }
 
-  void _incrementLocalField(String field) {
-    // Increment the appropriate field locally
-    if (field == "adapting") {
-      _infoMostUseds.adapting++;
-    } else if (field == "exchanges") {
-      _infoMostUseds.exchanges++;
-    } else if (field == "mental") {
-      _infoMostUseds.mental++;
-    } else if (field == "recipes") {
-      _infoMostUseds.recipes++;
-    } else if (field == "universities") {
-      _infoMostUseds.universities++;
+  // Update a specific field with connectivity check
+  void updateField(String field) async {
+    if (await _checkConnectivity()) {
+      log("No internet connection. Cannot update field.");
+    } else {
+      final InfoMostUsedService infoMostUsedService = InfoMostUsedService();
+      infoMostUsedService.incrementField("uses", field);
+
+      // After updating, save the new data to Shared Preferences
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('infoMostUsed', jsonEncode(_infoMostUseds.toJson()));
     }
-
-    // Save the updated object to SharedPreferences immediately after the change
-    _saveToLocalStorage();
-  }
-
-  void _saveToLocalStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('infoMostUsed', jsonEncode(_infoMostUseds.toJson()));
   }
 }
