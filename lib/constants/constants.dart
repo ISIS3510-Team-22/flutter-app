@@ -14,7 +14,7 @@ const Color darkBlueBottonColor = Color(0xFF01397D);
 // Define text styles with font families
 const TextStyle titleTextStyle = TextStyle(
   fontFamily: 'RubikMonoOne',
-  fontSize: 24,
+  fontSize: 22,
   fontWeight: FontWeight.w500,
   color: Colors.white,
 );
