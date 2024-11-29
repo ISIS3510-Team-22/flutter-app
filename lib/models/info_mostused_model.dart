@@ -1,10 +1,10 @@
 class InfoMostUsed {
   final String id;
-  final int adapting;
-  final int exchanges; // URL de la imagen de perfil (puede ser opcional)
-  final int mental; // Latitud del usuario
-  final int recipes;
-  final int universities;
+  int adapting;
+  int exchanges; // URL de la imagen de perfil (puede ser opcional)
+  int mental; // Latitud del usuario
+  int recipes;
+  int universities;
 
   InfoMostUsed({
     required this.id,
@@ -14,6 +14,30 @@ class InfoMostUsed {
     required this.recipes,
     required this.universities,
   });
+
+  // Convert a JSON map to an InfoMostUsed instance
+  factory InfoMostUsed.fromJson(Map<String, dynamic> json) {
+    return InfoMostUsed(
+      id: json['id'],
+      adapting: json['adapting'],
+      exchanges: json['exchanges'],
+      mental: json['mental'],
+      recipes: json['recipes'],
+      universities: json['universities'],
+    );
+  }
+
+  // Convert an InfoMostUsed instance to a JSON map
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'adapting': adapting,
+      'exchanges': exchanges,
+      'mental': mental,
+      'recipes': recipes,
+      'universities': universities,
+    };
+  }
 
   Map<String, dynamic> toMap() {
     return {

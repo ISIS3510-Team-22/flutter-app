@@ -121,7 +121,22 @@ class UniversitiesView extends StatelessWidget {
                             },
                           )
                         : const Center(
-                            child: Text('No data found')), // Display if no data
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.wifi_off,
+                                  size: 64.0,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 16.0),
+                                Text(
+                                  'No Internet Connection',
+                                  style: simpleText,
+                                ),
+                              ],
+                            ),
+                          ), // Display if no data
                   ),
 
                   // "Ranking" button at the bottom

@@ -10,7 +10,7 @@ class RecipeService {
   Future<List<Recipe>> getRecipes() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     bool hasInternet = connectivityResult != [ConnectivityResult.none];
-    print(hasInternet);
+
     if (hasInternet) {
       CollectionReference recipeCollection =
           FirebaseFirestore.instance.collection('recipes');

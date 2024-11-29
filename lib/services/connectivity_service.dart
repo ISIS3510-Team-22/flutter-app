@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
 import '../models/offline_messages_model.dart';
@@ -8,11 +9,13 @@ import '../services/profile_service.dart';
 
 class ConnectivityService {
   final FirestoreService _firestoreService = FirestoreService();
+  final Connectivity _connectivity = Connectivity();
   final ProfileService _profileService = ProfileService();
   late Box _offlineMessagesBox;
   // ignore: unused_field
   late Box _offlineProfileUpdatesBox;
-  late StreamSubscription<List<ConnectivityResult>> subscription;
+  late final StreamSubscription<List<ConnectivityResult>> _subscription;
+
 
   ConnectivityService() {
     _initialize();
@@ -20,20 +23,14 @@ class ConnectivityService {
 
   void _initialize() async {
     _offlineProfileUpdatesBox = await Hive.openBox('offline_profile_updates');
-    _offlineMessagesBox = await Hive.openBox('offline_messages');
-
-    // Escuchar los cambios de conectividad
-
-    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      if (result != ConnectivityResult.none) {
-        _sendOfflineMessages();
-        _profileService.syncOfflineProfileUpdates();
-      }
-    });
-  }
-
-  void dispose() {
-    subscription.cancel();
+    _offlineMessagesBox = await Hive.openBox('offline_messages'); 
+    _subscription = _connectivity.onConnectivityChanged.listen((results) {
+    // Verifica si hay conectividad (al menos un resultado que no sea 'none')
+    if (results.any((result) => result != ConnectivityResult.none)) {
+      _sendOfflineMessages(); // Envía mensajes al recuperar conexión
+      _profileService.syncOfflineProfileUpdates();
+    }
+  });
   }
 
   Future<void> _sendOfflineMessages() async {
@@ -62,5 +59,18 @@ class ConnectivityService {
     }
   }
 
-  
+  Future<bool> isConnected() async {
+  try {
+    final result = await InternetAddress.lookup('google.com');
+    return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  } catch (e) {
+    print('Error al verificar conexión: $e');
+    return false;
+  }
+}
+
+
+  void dispose() {
+    _subscription.cancel();
+  }
 }
