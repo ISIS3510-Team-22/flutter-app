@@ -28,6 +28,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
   await Hive.initFlutter();
   Hive.registerAdapter(OfflineMessageAdapter());
   Hive.registerAdapter(OfflineProfileUpdateAdapter());
