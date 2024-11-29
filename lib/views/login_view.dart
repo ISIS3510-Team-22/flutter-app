@@ -25,16 +25,20 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isOffline = false;
   String _connectionMessage = "";
   Color _connectionColor = Colors.transparent;
 
+  late StreamSubscription<List<ConnectivityResult>> subscription;
+
   @override
   void initState() {
     super.initState();
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      if (result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi)) {
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.mobile) ||
+          result.contains(ConnectivityResult.wifi)) {
         _showConnectionStatus("Connection restored", Colors.green);
       } else {
         _showConnectionStatus("No internet connection", Colors.red);
@@ -46,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _connectivitySubscription.cancel();
+    subscription.cancel();
     super.dispose();
   }
 
@@ -77,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_isOffline) {
       showToast(message: "No internet connection");
       setState(() {
-      _isSigning = false;
+        _isSigning = false;
       });
       return null;
     }
@@ -90,108 +94,136 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       showToast(message: "User is successfully signed in");
       Navigator.pushNamed(context, "/information");
-    } else {
-      showToast(message: "Some error occurred");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: IntrinsicHeight(
+              child: Stack(
                 children: [
-                  SvgPicture.asset("assets/banner.svg", height: 140),
-                  const SizedBox(height: 30),
-                  FormContainerWidget(
-                    controller: _emailController,
-                    hintText: "Email",
-                    isPasswordField: false,
-                    onChanged: (value) {},
-                  ),
-                  const SizedBox(height: 10),
-                  FormContainerWidget(
-                    controller: _passwordController,
-                    hintText: "Password",
-                    isPasswordField: true,
-                    onChanged: (value) {},
-                  ),
-                  const SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: _signIn,
-                    child: Container(
-                      width: double.infinity,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        color: darkBlueBottonColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: _isSigning
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : const Text("Sign in", style: bodyTextStyle),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                            height: 20), // Espaciado superior opcional
+                        SvgPicture.asset("assets/banner.svg", height: 140),
+                        const SizedBox(height: 30),
+                        FormContainerWidget(
+                          controller: _emailController,
+                          hintText: "Email",
+                          isPasswordField: false,
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(height: 10),
+                        FormContainerWidget(
+                          controller: _passwordController,
+                          hintText: "Password",
+                          isPasswordField: true,
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(height: 30),
+                        GestureDetector(
+                          onTap: _signIn,
+                          child: Container(
+                            width: double.infinity,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: darkBlueBottonColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: _isSigning
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Text("Sign in", style: bodyTextStyle),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotPasswordPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Forgot your password?",
+                                style: subBodyTextStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Don't have an account?",
+                              style: subBodyTextStyle,
+                            ),
+                            const SizedBox(width: 5),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignUpPage(),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text(
+                                "Sign Up",
+                                style: buttonTextStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
-                          );
-                        },
-                        child: const Text("Forgot your password?", style: subBodyTextStyle),
+                  if (_isOffline)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        color: _connectionColor,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Center(
+                          child: Text(
+                            _connectionMessage,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account?", style: subBodyTextStyle),
-                      const SizedBox(width: 5),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SignUpPage()),
-                            (route) => false,
-                          );
-                        },
-                        child: const Text("Sign Up", style: buttonTextStyle),
-                      ),
-                    ],
-                  ),
+                    ),
                 ],
               ),
             ),
           ),
-          if (_isOffline)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                color: _connectionColor,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Center(
-                  child: Text(
-                    _connectionMessage,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

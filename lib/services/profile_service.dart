@@ -10,16 +10,19 @@ class ProfileService {
   final FirestoreService _firestoreService = FirestoreService();
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   late Box _offlineProfileUpdatesBox;
+  late Future<void> _initialized;
 
   ProfileService() {
-    _initialize();
+    _initialized = _initialize();
   }
 
-  void _initialize() async {
+  Future<void> _initialize() async {
     _offlineProfileUpdatesBox = await Hive.openBox('offline_profile_updates');
   }
 
   Future<void> saveProfileUpdate(String userId, {String? name, File? imageFile}) async {
+    await _initialized;
+
     final hasConnection = await _isConnected();
     String? profilePictureUrl;
 
@@ -44,6 +47,7 @@ class ProfileService {
   }
 
   Future<void> syncOfflineProfileUpdates() async {
+    await _initialized;
     final profileUpdates = _offlineProfileUpdatesBox.values.cast<OfflineProfileUpdate>();
 
     for (var update in profileUpdates) {

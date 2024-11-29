@@ -8,8 +8,8 @@ import '../services/firestore_service.dart';
 import '../services/profile_service.dart';
 
 class ConnectivityService {
-  final Connectivity _connectivity = Connectivity();
   final FirestoreService _firestoreService = FirestoreService();
+  final Connectivity _connectivity = Connectivity();
   final ProfileService _profileService = ProfileService();
   late Box _offlineMessagesBox;
   // ignore: unused_field

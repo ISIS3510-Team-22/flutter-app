@@ -17,8 +17,8 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final AuthService _authService = AuthService();
   final FirestoreService _firestoreService = FirestoreService();
-  final ConnectivityService _connectivityService = ConnectivityService();
   final ProfileService _profileService = ProfileService();
+  final ConnectivityService _connectivityService = ConnectivityService();
   Usuario? _usuarioActual;
 
   @override
@@ -66,6 +66,11 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   // Navegación a la pantalla de edición de perfil
   void _navigateToEditProfile() async {
     if (_usuarioActual != null) {
@@ -85,11 +90,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
-  @override
-  void dispose() {
-    _connectivityService.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

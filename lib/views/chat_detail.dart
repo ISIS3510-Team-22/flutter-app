@@ -44,7 +44,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 });
   }
 
-
   // Acción al enviar un mensaje
   void _sendMessage() async {
     final message = _messageController.text;
@@ -78,19 +77,20 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   // Guardar mensaje offline en Hive
   void _saveMessageOffline(Mensaje mensaje) {
-  final offlineMessage = OfflineMessage(
-    senderId: mensaje.senderId,
-    receiverId: mensaje.receiverId,
-    texto: mensaje.texto,
-    timestamp: mensaje.timestamp,
-  );
+    final offlineMessage = OfflineMessage(
+      senderId: mensaje.senderId,
+      receiverId: mensaje.receiverId,
+      texto: mensaje.texto,
+      timestamp: mensaje.timestamp,
+    );
 
-  // Convierte la lista al tipo correcto
-  final messages = List<OfflineMessage>.from(_offlineMessagesBox.get(widget.chat.id, defaultValue: <OfflineMessage>[]) as List);
-  messages.add(offlineMessage);
-  _offlineMessagesBox.put(widget.chat.id, messages);
-  print('Mensaje guardado offline: ${offlineMessage.texto}');
-}
+    // Convierte la lista al tipo correcto
+    final messages = List<OfflineMessage>.from(_offlineMessagesBox
+        .get(widget.chat.id, defaultValue: <OfflineMessage>[]) as List);
+    messages.add(offlineMessage);
+    _offlineMessagesBox.put(widget.chat.id, messages);
+    print('Mensaje guardado offline: ${offlineMessage.texto}');
+  }
 
 // Enviar mensajes offline cuando hay conexión
 Future<void> _sendOfflineMessages() async {
@@ -105,31 +105,29 @@ Future<void> _sendOfflineMessages() async {
           timestamp: offlineMessage.timestamp,
         );
 
-        try {
-          await _firestoreService.guardarMensaje(widget.chat.id, mensaje);
-        } catch (e) {
-          print('Error al enviar mensaje offline: $e');
-          return; // Sal del bucle si ocurre un error
+          try {
+            await _firestoreService.guardarMensaje(widget.chat.id, mensaje);
+          } catch (e) {
+            print('Error al enviar mensaje offline: $e');
+            return; // Sal del bucle si ocurre un error
+          }
         }
+        _offlineMessagesBox
+            .delete(widget.chat.id); // Limpia los mensajes enviados
+        print('Mensajes offline enviados.');
       }
-      _offlineMessagesBox.delete(widget.chat.id); // Limpia los mensajes enviados
-      print('Mensajes offline enviados.');
+    } else {
+      print("No hay conexión. Los mensajes permanecerán en espera.");
     }
-  } else {
-    print("No hay conexión. Los mensajes permanecerán en espera.");
   }
-}
 
-
-void listarMensajesOffline() {
-  final messages = _offlineMessagesBox.get(widget.chat.id, defaultValue: <OfflineMessage>[]) as List<OfflineMessage>;
-  messages.forEach((msg) {
-    print("Mensaje offline guardado: ${msg.texto}");
-  });
-}
-
-
-
+  void listarMensajesOffline() {
+    final messages = _offlineMessagesBox.get(widget.chat.id,
+        defaultValue: <OfflineMessage>[]) as List<OfflineMessage>;
+    messages.forEach((msg) {
+      print("Mensaje offline guardado: ${msg.texto}");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +225,7 @@ void listarMensajesOffline() {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: (){
+                  onPressed: () {
                     _sendMessage();
                     listarMensajesOffline();
                   },

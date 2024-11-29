@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -34,9 +33,11 @@ class _EditProfileViewState extends State<EditProfileView> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      setState(() {
-        _newProfileImage = File(pickedFile.path);
-      });
+      if (mounted) {
+        setState(() {
+          _newProfileImage = File(pickedFile.path);
+        });
+      }
     }
   }
 
@@ -46,8 +47,15 @@ class _EditProfileViewState extends State<EditProfileView> {
       name: _nameController.text,
       imageFile: _newProfileImage,
     );
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
+  }
 
-    Navigator.pop(context, true);
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   @override
