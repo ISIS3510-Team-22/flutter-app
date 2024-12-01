@@ -15,6 +15,7 @@ import 'routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:studyglide/routes.dart';
+import 'package:studyglide/services/connect_alert_service.dart';
 import 'firebase_options.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 // import 'services/connectivity_service.dart';
@@ -43,6 +44,7 @@ void main() async {
   // ConnectionService().startMonitoring();
 
   configureFirestore();
+  ConnectionService().startMonitoring();
   runApp(StudyGlideApp());
 }
 
@@ -88,7 +90,7 @@ class _StudyGlideAppState extends State<StudyGlideApp> {
         scaffoldBackgroundColor: darkBlueColor,
       ),
       initialRoute:
-          FirebaseAuth.instance.currentUser == null ? '/login' : '/information',
+          FirebaseAuth.instance.currentUser == null ? '/' : '/information',
       routes: appRoutes,
     );
   }

@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:studyglide/constants/constants.dart';
 import 'package:studyglide/firebase_auth_services.dart';
+import 'package:studyglide/services/connect_alert_service.dart';
 import 'package:studyglide/services/location_service.dart';
 import 'package:studyglide/views/login_view.dart';
 import 'package:studyglide/widgets/form_container_widget.dart';
@@ -21,6 +21,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  bool isSigningUp = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -29,25 +30,21 @@ class _SignUpPageState extends State<SignUpPage> {
       TextEditingController();
 
   // ignore: unused_field
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<ConnectionStatus> _connectionSubscription;
   bool _isOffline = false;
   String _connectionMessage = "";
   Color _connectionColor = Colors.transparent;
-  bool isSigningUp = false;
 
   @override
   void initState() {
     super.initState();
-
     // Start listening to changes.
     _passwordController.addListener(checkPassword);
     _emailController.addListener(isValidEmail);
     _confirmPasswordController.addListener(passwordMatch);
-    Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> result) {
-      if (result.contains(ConnectivityResult.mobile) ||
-          result.contains(ConnectivityResult.wifi)) {
+    _connectionSubscription =
+        ConnectionService().connectionStatusStream.listen((status) {
+      if (status == ConnectionStatus.connected) {
         _showConnectionStatus("Connection restored", Colors.green);
       } else {
         _showConnectionStatus("No internet connection", Colors.red);
@@ -62,7 +59,6 @@ class _SignUpPageState extends State<SignUpPage> {
       _isOffline = true;
     });
 
-    // Ocultar el banner después de unos segundos si la conexión se restaura
     if (color == Colors.green) {
       Future.delayed(const Duration(seconds: 3), () {
         setState(() {
@@ -144,6 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _connectionSubscription.cancel();
     super.dispose();
   }
 
