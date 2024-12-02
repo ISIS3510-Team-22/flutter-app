@@ -3,11 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:studyglide/constants/constants.dart';
-<<<<<<< Updated upstream
-import 'package:studyglide/services/connectivity_alert_service.dart';
-=======
 import 'package:studyglide/services/connect_alert_service.dart';
->>>>>>> Stashed changes
 import 'package:studyglide/views/forgot_password_view.dart';
 import 'package:studyglide/views/sign_up_view.dart';
 import 'package:studyglide/widgets/form_container_widget.dart';
@@ -34,11 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   String _connectionMessage = "";
   Color _connectionColor = Colors.transparent;
 
-<<<<<<< Updated upstream
-  late StreamSubscription<ConnectionStatus> _connectionSubscription;
 
-=======
->>>>>>> Stashed changes
   @override
   void initState() {
     super.initState();
