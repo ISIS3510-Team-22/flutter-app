@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:studyglide/constants/constants.dart';
+import 'package:studyglide/services/connect_alert_service.dart';
 import 'package:studyglide/views/forgot_password_view.dart';
 import 'package:studyglide/views/sign_up_view.dart';
 import 'package:studyglide/widgets/form_container_widget.dart';
@@ -25,20 +25,18 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  late StreamSubscription<ConnectionStatus> _connectionSubscription;
   bool _isOffline = false;
   String _connectionMessage = "";
   Color _connectionColor = Colors.transparent;
 
-  late StreamSubscription<List<ConnectivityResult>> subscription;
 
   @override
   void initState() {
     super.initState();
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> result) {
-      if (result.contains(ConnectivityResult.mobile) ||
-          result.contains(ConnectivityResult.wifi)) {
+    _connectionSubscription =
+        ConnectionService().connectionStatusStream.listen((status) {
+      if (status == ConnectionStatus.connected) {
         _showConnectionStatus("Connection restored", Colors.green);
       } else {
         _showConnectionStatus("No internet connection", Colors.red);
@@ -50,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    subscription.cancel();
+    _connectionSubscription.cancel();
     super.dispose();
   }
 
@@ -61,9 +59,8 @@ class _LoginPageState extends State<LoginPage> {
       _isOffline = true;
     });
 
-    // Ocultar el banner después de unos segundos si la conexión se restaura
     if (color == Colors.green) {
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 3), () {
         setState(() {
           _isOffline = false;
         });

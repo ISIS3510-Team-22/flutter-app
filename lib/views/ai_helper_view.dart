@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +27,35 @@ class _AiHelperViewState extends State<AiHelperView> {
 
   final List<Map<String, dynamic>> messages = [];
   bool firstLoad = true;
+  bool _isOffline = false;
+
+  late StreamSubscription<List<ConnectivityResult>> subscription;
 
   @override
   void initState() {
     super.initState();
     _loadMessages();
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.mobile) ||
+          result.contains(ConnectivityResult.wifi)) {
+        setState(() {
+          _isOffline = false;
+        });
+      } else {
+        setState(() {
+          _isOffline = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    subscription.cancel();
+    super.dispose();
   }
 
   void _loadMessages() {
@@ -163,59 +190,80 @@ class _AiHelperViewState extends State<AiHelperView> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(10),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[index];
-                return BubbleSpecialThree(
-                  text: message['message'],
-                  color: message['senderId'] == "AI"
-                      ? const Color(0xFFE8E8EE)
-                      : const Color(0xFF1B97F3),
-                  tail: true,
-                  textStyle: const TextStyle(
-                    fontFamily: 'WorkSans',
-                    fontSize: 14,
-                    color: Colors.black,
-                  ),
-                  isSender: message['senderId'] != "AI",
-                );
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      body: _isOffline
+          ? const Padding(
+            padding: EdgeInsets.all(16.0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.wifi_off,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "No Internet Connection",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold , color : Colors.white),
+                    ),
+                    
+                  ],
+                ),
+              ),
+            )
+          : Column(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    style: simpleText,
-                    decoration: InputDecoration(
-                      hintText: "Write a message...",
-                      hintStyle: simpleText,
-                      labelStyle: simpleText,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(10),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final message = messages[index];
+                      return BubbleSpecialThree(
+                        text: message['message'],
+                        color: message['senderId'] == "AI"
+                            ? const Color(0xFFE8E8EE)
+                            : const Color(0xFF1B97F3),
+                        tail: true,
+                        textStyle: const TextStyle(
+                          fontFamily: 'WorkSans',
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                        isSender: message['senderId'] != "AI",
+                      );
+                    },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                  color: Colors.white,
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          style: simpleText,
+                          decoration: InputDecoration(
+                            hintText: "Write a message...",
+                            hintStyle: simpleText,
+                            labelStyle: simpleText,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: _sendMessage,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
         showUnselectedLabels: true,
