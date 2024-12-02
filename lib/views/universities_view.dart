@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/universities_viewmodel.dart';
+import './university_detail_view.dart';
 import '../constants/constants.dart';
 
 class UniversitiesView extends StatelessWidget {
@@ -69,52 +70,21 @@ class UniversitiesView extends StatelessWidget {
                                         grayBlueColor, // Darker blue for the university container
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: ExpansionTile(
+                                  child: ListTile(
                                     title: Text(
                                       university.name,
                                       style: bodyTextStyle,
                                     ),
-                                    iconColor: Colors.white,
-                                    collapsedIconColor: Colors.white,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16.0, vertical: 8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              "City:",
-                                              style: simpleText,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                            Text(
-                                              university.city,
-                                              style: simpleText,
-                                            ),
-                                            const SizedBox(height: 10),
-                                            const Text(
-                                              "Country:",
-                                              style: simpleText,
-                                            ),
-                                            Text(
-                                              university.country,
-                                              style: simpleText,
-                                            ),
-                                            const SizedBox(height: 10),
-                                            const Text(
-                                              "Students:",
-                                              style: simpleText,
-                                            ),
-                                            Text(
-                                              university.students.toString(),
-                                              style: simpleText,
-                                            ),
-                                          ],
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              UniversityDetailView(
+                                                  university: university),
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
                                 ),
                               );
