@@ -1,15 +1,16 @@
 class Opinion {
-  final String name;
-  final String id;
-  final double rating;
-  final String comment;
-
   Opinion({
     required this.id,
     required this.name,
     required this.rating,
     required this.comment,
   });
+  
+  final String name;
+  final String id;
+  final double rating;
+  final String comment;
+
 
   factory Opinion.fromMap(Map<String, dynamic> data, String id) {
     return Opinion(
