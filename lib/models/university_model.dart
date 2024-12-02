@@ -5,6 +5,7 @@ class University {
   final String city;
   final String country;
   final String name;
+  final String imageUrl;
   final int students;
   final List<Opinion> opinions;
 
@@ -15,6 +16,7 @@ class University {
     required this.name,
     required this.students,
     required this.opinions,
+    required this.imageUrl,
   });
 
   factory University.fromMap(
@@ -24,6 +26,7 @@ class University {
       name: data['name'] as String,
       city: data['city'] as String,
       country: data['country'] as String,
+      imageUrl: data['imageUrl'] as String,
       students: data['students'] as int,
       opinions: opinions,
     );
