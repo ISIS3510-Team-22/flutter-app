@@ -45,11 +45,20 @@ class UniversityDetailView extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: Image.network(
-                          university
-                              .imageUrl, // Replace with university image URL.
+                          university.imageUrl,
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Text(
+                                'Image failed\nto load',
+                                textAlign: TextAlign.center,
+                                style:
+                                    TextStyle(fontSize: 14, color: Colors.red),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(width: 16),
