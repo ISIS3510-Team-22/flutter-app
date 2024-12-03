@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/universities_viewmodel.dart';
+import '../viewmodels/searched_queries_viewmodel.dart';
 import '../models/university_model.dart';
 import './university_detail_view.dart';
 import '../constants/constants.dart';
@@ -14,6 +15,9 @@ class UniversitiesView extends StatefulWidget {
 
 class _UniversitiesViewState extends State<UniversitiesView> {
   String searchQuery = '';
+  final TextEditingController _controller = TextEditingController();
+  final SearchedQueriesViewModel searchedQueriesViewModel =
+      SearchedQueriesViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +59,7 @@ class _UniversitiesViewState extends State<UniversitiesView> {
                       children: [
                         Expanded(
                           child: TextField(
-                            onChanged: (query) {
-                              setState(() {
-                                searchQuery = query;
-                              });
-                            },
+                            controller: _controller,
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
                               hintText: 'Search',
@@ -68,8 +68,17 @@ class _UniversitiesViewState extends State<UniversitiesView> {
                             ),
                           ),
                         ),
-                        const Icon(Icons.filter_alt_outlined,
-                            color: Colors.white),
+                        IconButton(
+                          icon: const Icon(Icons.filter_alt_outlined,
+                              color: Colors.white),
+                          onPressed: () {
+                            // Trigger the onChanged function only when the icon is tapped
+                            searchedQueriesViewModel.addQuery(_controller.text);
+                            setState(() {
+                              searchQuery = _controller.text;
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -78,7 +87,7 @@ class _UniversitiesViewState extends State<UniversitiesView> {
 
                   // List of Universities
                   Expanded(
-                    child: filteredUniversities.isNotEmpty
+                    child: viewModel.universities.isNotEmpty
                         ? ListView.builder(
                             itemCount: filteredUniversities.length,
                             itemBuilder: (context, index) {
