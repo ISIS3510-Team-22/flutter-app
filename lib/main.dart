@@ -39,6 +39,7 @@ void main() async {
   Hive.registerAdapter(OfflineOpinionAdapter());
   await Hive.openBox('offline_messages');
   await Hive.openBox('offline_profile_updates');
+  await Hive.openBox('offline_opinions');
   configureFirestore();
   ConnectionService().startMonitoring();
   runApp(StudyGlideApp());

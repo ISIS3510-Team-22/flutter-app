@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studyglide/views/add_opinion_view.dart';
 import '../constants/constants.dart';
 import '../models/university_model.dart';
 import '../models/opinion_model.dart';
@@ -78,7 +79,13 @@ class UniversityDetailView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: GestureDetector(
                 onTap: () {
-                  // Add your review functionality here.
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddReviewView(university), // Pass the university object.
+                    ),
+                  );
                 },
                 child: Container(
                   width: 60,

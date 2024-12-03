@@ -8,7 +8,7 @@ part of 'offline_opinion_model.dart';
 
 class OfflineOpinionAdapter extends TypeAdapter<OfflineOpinion> {
   @override
-  final int typeId = 1;
+  final int typeId = 3;
 
   @override
   OfflineOpinion read(BinaryReader reader) {

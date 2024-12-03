@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'offline_opinion_model.g.dart';
 
 
-@HiveType(typeId: 1) // Asegúrate de que el typeId es único en toda la aplicación
+@HiveType(typeId: 3) // Asegúrate de que el typeId es único en toda la aplicación
 class OfflineOpinion extends HiveObject {
   @HiveField(0)
   final String name;
