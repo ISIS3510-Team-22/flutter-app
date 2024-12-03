@@ -31,4 +31,10 @@ class University {
       opinions: opinions,
     );
   }
+
+  double get averageRating {
+    if (opinions.isEmpty) return 0.0;
+    double total = opinions.fold(0.0, (sum, opinion) => sum + opinion.rating);
+    return total / opinions.length;
+  }
 }

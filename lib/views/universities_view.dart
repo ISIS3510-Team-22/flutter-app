@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/universities_viewmodel.dart';
+import '../models/university_model.dart';
 import './university_detail_view.dart';
 import '../constants/constants.dart';
 
-class UniversitiesView extends StatelessWidget {
+class UniversitiesView extends StatefulWidget {
   const UniversitiesView({super.key});
+
+  @override
+  State<UniversitiesView> createState() => _UniversitiesViewState();
+}
+
+class _UniversitiesViewState extends State<UniversitiesView> {
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +21,13 @@ class UniversitiesView extends StatelessWidget {
       create: (context) => UniversityViewModel()..fetchUniversities(),
       child: Consumer<UniversityViewModel>(
         builder: (context, viewModel, child) {
+          List<University> filteredUniversities =
+              viewModel.universities.where((university) {
+            return university.name
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase());
+          }).toList();
+
           return Scaffold(
             backgroundColor: darkBlueColor, // Dark blue background
             appBar: AppBar(
@@ -36,18 +51,25 @@ class UniversitiesView extends StatelessWidget {
                       color: grayColor, // Grey background for the search bar
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Expanded(
                           child: TextField(
-                            decoration: InputDecoration(
+                            onChanged: (query) {
+                              setState(() {
+                                searchQuery = query;
+                              });
+                            },
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
                               hintText: 'Search',
                               hintStyle: buttonTextStyle,
                               border: InputBorder.none,
                             ),
                           ),
                         ),
-                        Icon(Icons.filter_alt_outlined, color: Colors.white),
+                        const Icon(Icons.filter_alt_outlined,
+                            color: Colors.white),
                       ],
                     ),
                   ),
@@ -56,11 +78,11 @@ class UniversitiesView extends StatelessWidget {
 
                   // List of Universities
                   Expanded(
-                    child: viewModel.universities.isNotEmpty
+                    child: filteredUniversities.isNotEmpty
                         ? ListView.builder(
-                            itemCount: viewModel.universities.length,
+                            itemCount: filteredUniversities.length,
                             itemBuilder: (context, index) {
-                              final university = viewModel.universities[index];
+                              final university = filteredUniversities[index];
                               return Padding(
                                 padding: const EdgeInsets.all(
                                     8.0), // Add some padding around each item
@@ -107,28 +129,6 @@ class UniversitiesView extends StatelessWidget {
                               ],
                             ),
                           ), // Display if no data
-                  ),
-
-                  // "Ranking" button at the bottom
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Container(
-                        height: 60,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color:
-                              grayBlueColor, // Same color as the university container
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Ranking',
-                            style: buttonTextStyle,
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),

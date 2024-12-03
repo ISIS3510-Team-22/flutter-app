@@ -14,4 +14,12 @@ class UniversityViewModel extends ChangeNotifier {
       notifyListeners(); // Notifies the View to rebuild with new data
     });
   }
+
+  List<University> searchUniversities(String query) {
+    if (query.isEmpty) return universities;
+    return universities
+        .where((university) =>
+            university.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+  }
 }
