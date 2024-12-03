@@ -19,20 +19,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
   double? latitudActual;
   double? longitudActual;
   late User? currentUser;
+  bool noData = false;
 
   @override
   void initState() {
     super.initState();
     obtenerUbicacionActual();
     currentUser = FirebaseAuth.instance.currentUser;
-    
   }
 
   void obtenerUbicacionActual() async {
     // Solicitar la ubicación actual usando el paquete geolocator
     LocationPermission permission = await Geolocator.checkPermission();
     // Solicitar la ubicación actual usando el paquete geolocator
-
 
     // Si no hay permisos, solicitarlos
     if (permission == LocationPermission.denied ||
@@ -53,16 +52,26 @@ class _ChatListScreenState extends State<ChatListScreen> {
         desiredAccuracy: LocationAccuracy.high);
     // Obtener la ubicación actual
 
-
     // Asignar la latitud y longitud obtenidas
     setState(() {
       latitudActual = position.latitude;
       longitudActual = position.longitude;
     });
   }
-    // Asignar la latitud y longitud obtenidas
+  // Asignar la latitud y longitud obtenidas
 
-  
+  Future<List<Usuario>> _obtenerUsuarios() async {
+    try {
+      return await _firestoreService.obtenerUsuariosCercanos(
+          latitudActual!, longitudActual!);
+    } catch (e) {
+      print('Error al cargar usuarios: $e');
+      setState(() {
+        noData = true;
+      });
+      return [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,119 +86,143 @@ class _ChatListScreenState extends State<ChatListScreen> {
       ),
       body: latitudActual == null || longitudActual == null
           ? const Center(child: CircularProgressIndicator())
-          : FutureBuilder<List<Usuario>>(
-              future: _firestoreService.obtenerUsuariosCercanos(
-                  latitudActual!, longitudActual!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+          : noData
+              ? const Center(
+                  child: Text(
+                    'No internet connection',
+                    textAlign: TextAlign.center,
+                    style: bodyTextStyle,
+                  ),
+                )
+              : FutureBuilder<List<Usuario>>(
+                  future: _firestoreService.obtenerUsuariosCercanos(
+                      latitudActual!, longitudActual!),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text(
-                    'No hay usuarios cercanos',
-                    style: headerTextStyle,
-                  ));
-                }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                          child: Text(
+                        'No hay usuarios cercanos',
+                        style: headerTextStyle,
+                      ));
+                    }
 
-                // Obtener la lista de usuarios
-                final usuarios = snapshot.data!;
+                    // Obtener la lista de usuarios
+                    final usuarios = snapshot.data!;
 
-                // Filtrar el usuario actual de la lista de usuarios
-                final filteredUsuarios = usuarios
-                    .where((usuario) => usuario.id != currentUser!.uid)
-                    .toList();
+                    // Filtrar el usuario actual de la lista de usuarios
+                    final filteredUsuarios = usuarios
+                        .where((usuario) => usuario.id != currentUser!.uid)
+                        .toList();
 
-                // Ordenar los usuarios por distancia
-                filteredUsuarios.sort((a, b) {
-                  double distanciaA = _firestoreService.calcularDistancia(
-                      latitudActual!, longitudActual!, a.latitud!, a.longitud!);
-                  double distanciaB = _firestoreService.calcularDistancia(
-                      latitudActual!, longitudActual!, b.latitud!, b.longitud!);
-                  return distanciaA
-                      .compareTo(distanciaB); // Ordenar de menor a mayor
-                });
+                    // Ordenar los usuarios por distancia
+                    filteredUsuarios.sort((a, b) {
+                      double distanciaA = _firestoreService.calcularDistancia(
+                          latitudActual!,
+                          longitudActual!,
+                          a.latitud!,
+                          a.longitud!);
+                      double distanciaB = _firestoreService.calcularDistancia(
+                          latitudActual!,
+                          longitudActual!,
+                          b.latitud!,
+                          b.longitud!);
+                      return distanciaA
+                          .compareTo(distanciaB); // Ordenar de menor a mayor
+                    });
 
-              // Construir la lista ordenada y filtrada
-              return ListView.builder(
-                itemCount: filteredUsuarios.length,
-                itemBuilder: (context, index) {
-                  final usuario = filteredUsuarios[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2C3E50), // Fondo oscuro similar
-                        borderRadius: BorderRadius.circular(20), // Bordes redondeados
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(usuario.profilePictureUrl ?? ''),
-                        ),
-                        title: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF34495E), // Fondo del contenedor de texto
-                            borderRadius: BorderRadius.circular(12), // Bordes redondeados
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Nombre y distancia en la misma fila (Row)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      usuario.name,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
+                    // Construir la lista ordenada y filtrada
+                    return ListView.builder(
+                      itemCount: filteredUsuarios.length,
+                      itemBuilder: (context, index) {
+                        final usuario = filteredUsuarios[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(
+                                  0xFF2C3E50), // Fondo oscuro similar
+                              borderRadius: BorderRadius.circular(
+                                  20), // Bordes redondeados
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              leading: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: NetworkImage(
+                                    usuario.profilePictureUrl ?? ''),
+                              ),
+                              title: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                      0xFF34495E), // Fondo del contenedor de texto
+                                  borderRadius: BorderRadius.circular(
+                                      12), // Bordes redondeados
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Nombre y distancia en la misma fila (Row)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            usuario.name,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Flexible(
+                                          child: Text(
+                                            '${_firestoreService.calcularDistancia(latitudActual!, longitudActual!, usuario.latitud!, usuario.longitud!).toStringAsFixed(2)} km', // Mostrar distancia calculada
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      '${_firestoreService.calcularDistancia(latitudActual!, longitudActual!, usuario.latitud!, usuario.longitud!).toStringAsFixed(2)} km', // Mostrar distancia calculada
-                                      style: const TextStyle(
+                                    const SizedBox(
+                                        height:
+                                            5), // Espacio entre nombre/distancia y el mensaje
+                                    const Text(
+                                      'Toca para empezar a chatear',
+                                      style: TextStyle(
                                         color: Colors.white70,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5), // Espacio entre nombre/distancia y el mensaje
-                              const Text(
-                                'Toca para empezar a chatear',
-                                style: TextStyle(
-                                  color: Colors.white70,
+                                  ],
                                 ),
                               ),
-                            ],
+                              onTap: () {
+                                _crearChat(usuario);
+                              },
+                            ),
                           ),
-                        ),
-                        onTap: () {
-                          _crearChat(usuario);
-                        },
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-  );
-}
-
+                        );
+                      },
+                    );
+                  },
+                ),
+    );
+  }
 
   void _crearChat(Usuario usuario) async {
-  // Obtener el usuario actual
-  User? currentUser = FirebaseAuth.instance.currentUser;
-  if (currentUser == null) return;
+    // Obtener el usuario actual
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
 
     // Generar un chatId único basado en los IDs de los usuarios
     String chatId = _generarChatId(currentUser.uid, usuario.id);
@@ -213,25 +246,25 @@ class _ChatListScreenState extends State<ChatListScreen> {
       // Guardar el nuevo chat en Firestore
       await _firestoreService.guardarChat(nuevoChat);
 
-    // Navegar a la pantalla de detalles del chat
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatDetailScreen(chat: nuevoChat),
-      ),
-    );
-  } else {
-    // Si ya existe el chat, navega directamente a él
-    chatExistente.username = usuario.name;
-    chatExistente.profilePictureUrl = usuario.profilePictureUrl ?? '';
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatDetailScreen(chat: chatExistente),
-      ),
-    );
+      // Navegar a la pantalla de detalles del chat
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatDetailScreen(chat: nuevoChat),
+        ),
+      );
+    } else {
+      // Si ya existe el chat, navega directamente a él
+      chatExistente.username = usuario.name;
+      chatExistente.profilePictureUrl = usuario.profilePictureUrl ?? '';
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatDetailScreen(chat: chatExistente),
+        ),
+      );
+    }
   }
-}
 
 // Función para generar un chatId único para ambos usuarios
   String _generarChatId(String userId1, String userId2) {

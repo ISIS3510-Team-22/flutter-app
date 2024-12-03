@@ -20,6 +20,7 @@ class _ProfileViewState extends State<ProfileView> {
   final ProfileService _profileService = ProfileService();
   final ConnectivityService _connectivityService = ConnectivityService();
   Usuario? _usuarioActual;
+  bool _isConnected = true;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> _cargarDatos() async {
     try {
+      _isConnected = await _connectivityService.isConnected();
       Usuario? usuario = _authService.obtenerUsuarioActual();
       final userId = usuario?.id;
       final perfil = await _firestoreService.obtenerPerfil(userId!);
@@ -39,6 +41,9 @@ class _ProfileViewState extends State<ProfileView> {
       });
     } catch (e) {
       print('Error al cargar datos: $e');
+      setState(() {
+        _usuarioActual = null;
+      });
     }
   }
 
@@ -104,7 +109,15 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
         body: _usuarioActual == null
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: _isConnected
+                  ? const CircularProgressIndicator()
+                  : const Text(
+                      'No internet connection',
+                      textAlign: TextAlign.center,
+                      style: bodyTextStyle,
+                    ),
+            )
           : Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
