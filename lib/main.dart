@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:studyglide/constants/constants.dart';
 import 'package:studyglide/models/offline_messages_model.dart';
+import 'package:studyglide/models/offline_opinion_model.dart';
 import 'package:studyglide/models/offline_profile_update_model.dart';
 import 'package:studyglide/services/connect_alert_service.dart';
 import 'package:studyglide/services/connectivity_service.dart';
@@ -35,8 +36,10 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(OfflineMessageAdapter());
   Hive.registerAdapter(OfflineProfileUpdateAdapter());
+  Hive.registerAdapter(OfflineOpinionAdapter());
   await Hive.openBox('offline_messages');
   await Hive.openBox('offline_profile_updates');
+  await Hive.openBox('offline_opinions');
   configureFirestore();
   ConnectionService().startMonitoring();
   runApp(StudyGlideApp());

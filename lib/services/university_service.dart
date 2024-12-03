@@ -26,4 +26,12 @@ class UniversityService {
       return universities;
     });
   }
+
+  Future<void> addOpinion(String universityId, Opinion opinion) async {
+    await universityCollection.doc(universityId).collection('opinions').add({
+      'name': opinion.name,
+      'rating': opinion.rating,
+      'comment': opinion.comment,
+    });
+  }
 }
