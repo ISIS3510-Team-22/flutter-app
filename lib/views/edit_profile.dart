@@ -30,16 +30,40 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   // Función para elegir una imagen de perfil
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  final source = await showDialog<ImageSource>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Select image source'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, ImageSource.camera),
+          child: const Text('Camera'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          child: const Text('Gallery'),
+        ),
+      ],
+    ),
+  );
+
+  if (source != null) {
+    final pickedFile = await _picker.pickImage(source: source);
 
     if (pickedFile != null) {
-      if (mounted) {
-        setState(() {
-          _newProfileImage = File(pickedFile.path);
-        });
-      }
+      setState(() {
+        _newProfileImage = File(pickedFile.path);
+      });
+
+      // Actualizamos el perfil localmente
+      await _profileService.saveProfileUpdate(
+        widget.usuario.id,
+        name: widget.usuario.name,
+        imageFile: _newProfileImage,
+      );
     }
   }
+}
 
   Future<void> _saveProfile() async {
     await _profileService.saveProfileUpdate(
@@ -65,7 +89,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         backgroundColor: darkBlueColor,
         foregroundColor: Colors.white,
         title: const Text(
-          'Edit Profile',
+          'EDIT PROFILE',
           style: headerTextStyle,
         ),
         actions: [
